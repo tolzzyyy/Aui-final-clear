@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@import '@fontsource/great-vibes';
+
+
+.hero-container {
+
+
+  width: 100%;
+  height: 100vh;
+  background-image: url('../src/assets/BG (4).png');
+  background-size: cover;
+  background-position: center;
+}
+
+
+.great-vibes-text {
+  font-family: 'Great Vibes', cursive;
+  font-weight: 400; /* Great Vibes only has one weight */
+  
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}

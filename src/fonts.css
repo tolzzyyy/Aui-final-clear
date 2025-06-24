@@ -1,0 +1,33 @@
+/* fonts.css */
+/* Cormorant Unicase - include weights 500, 600, 700 */
+@import '@fontsource/cormorant-unicase/500.css';
+@import '@fontsource/cormorant-unicase/600.css';
+@import '@fontsource/cormorant-unicase/700.css';
+
+/* Poppins - include regular and medium weights */
+@import '@fontsource/poppins/400.css';
+@import '@fontsource/poppins/500.css';
+
+:root {
+  --font-heading: 'Cormorant Unicase', serif;
+  --font-body: 'Poppins', sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  font-weight: 400; /* Default weight for body text */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600; /* Semi-bold */
+}
+
+/* Specific weights for different headings */
+h1 {
+  font-weight: 700; /* Boldest available */
+}
+
+.thick-heading {
+  font-weight: 700 !important; /* For manual override */
+}
