@@ -208,7 +208,7 @@ const UserTopNav = () => {
                 </div>
             )}
 
-                  {/* Dropdown */}
+                {/* Dropdown */}
                     {logOutOpen && (
                         <div className="absolute top-24 right-5 lg:right-28 w-40 bg-white shadow-lg rounded-lg p-4 z-[9999]">
                         <button
