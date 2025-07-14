@@ -10,6 +10,7 @@ import SignIn from "./Components/Auth/SignIn";
 import ForgotPassword from "./Components/Auth/ForgotPassword";
 import ConfirmCode from "./Components/Auth/ConfirmCode";
 import Success from "./Components/Auth/Success";
+import UserLayout from "./Components/Users/UserLayout";
 
 const App = () => {
   return (
@@ -21,11 +22,14 @@ const App = () => {
           <Route path="/how-it-works"  exact element={<Howitworks />} />
           <Route path="/faq"  exact element={<Faq />} />
         </Route>
-             <Route path="/signup"  exact element={<SignUp />} />
+          <Route path="/signup"  exact element={<SignUp />} />
           <Route path="/signin"  exact element={<SignIn />} />
           <Route path="/forgotpassword"  exact element={<ForgotPassword />} />
           <Route path="/confirmation-code"  exact element={<ConfirmCode />} />
           <Route path="/success"  exact element={<Success />} />
+        <Route path="/userdashboard" element={<UserLayout />}>
+          
+        </Route>
       </Routes>
     </div>
   );
