@@ -16,7 +16,7 @@ const UserDashboard = ({ targetPercentage = 50 }) => {
     <div className='pt-20 px-[30px] lg:px-[50px] xl:px-[137px]'>
         <section className='flex justify-between items-center'>
             <div className='flex flex-col gap-3'>
-                <h1 className='text-5xl'>Welcome, Malu!</h1>
+                <h1 className='text-5xl'>Welcome, Malu Obi!</h1>
                 <p className='text-sm text-gray-600'>You've completed clearance with 3 out of 6 departments.</p>
             </div>
             {/* <div className='w-auto h-auto bg-white shadow-md flex items-center py-5 px-10 gap-8 rounded-md'>
