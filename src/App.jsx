@@ -13,6 +13,7 @@ import Success from "./Components/Auth/Success";
 import UserLayout from "./Components/Users/UserLayout";
 import { Navigate } from "react-router-dom";
 import ResetPassword from "./Components/Auth/ResetPassword";
+import UserDashboard from "./Components/Users/UserDashboard";
 
 const App = () => {
   const ProtectedRoute = ({ children }) => {
@@ -33,6 +34,14 @@ const App = () => {
           <Route path="/features" exact element={<Features />} />
           <Route path="/how-it-works" exact element={<Howitworks />} />
           <Route path="/faq" exact element={<Faq />} />
+        </Route>
+          <Route path="/signup"  exact element={<SignUp />} />
+          <Route path="/signin"  exact element={<SignIn />} />
+          <Route path="/forgotpassword"  exact element={<ForgotPassword />} />
+          <Route path="/confirmation-code"  exact element={<ConfirmCode />} />
+          <Route path="/success"  exact element={<Success />} />
+        <Route path="/userdashboard" element={<UserLayout />}>
+          <Route index element={<UserDashboard />} />
         </Route>
         <Route path="/signup" exact element={<SignUp />} />
         <Route path="/signin" exact element={<SignIn />} />
