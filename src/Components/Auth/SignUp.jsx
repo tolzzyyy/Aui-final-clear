@@ -4,11 +4,12 @@ import AuthLayout from "./AuthLayout";
 import BackArrowSvg from "../../assets/svg's/BackArrowSvg";
 import MailSvg from "../../assets/svg's/MailSvg";
 import CircleCheckSvg from "../../assets/svg's/CircleCheckSvg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const SignUp = () => {
+    const navigate = useNavigate(); // Add this line
   const formRef = useRef(null);
   const inputRefs = useRef([]);
   const [formData, setFormData] = useState({
@@ -19,6 +20,7 @@ const SignUp = () => {
     password: "",
     confirmPassword: "",
     phoneNumber: "",
+    department: ""
     
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +58,8 @@ const SignUp = () => {
       !formData.email ||
       !formData.password ||
       !formData.confirmPassword ||
-      !formData.phoneNumber
+      !formData.phoneNumber ||
+      !formData.department
     ) {
       toast.error("Please fill in all required fields");
       setError("Please fill in all required fields");
@@ -77,6 +80,7 @@ const SignUp = () => {
           password: formData.password,
           confirmPassword: formData.confirmPassword,
           phoneNumber: formData.phoneNumber,
+          department: formData.department,
         },
         {
           headers: {
@@ -86,9 +90,17 @@ const SignUp = () => {
       );
 
       if (response.data) {
-        toast.success("Registration successful!");
-        setSuccess(true);
-      }
+      // PROPERLY STORE USER DATA
+      const userData = {
+        token: response.data.token, // Make sure your backend returns these
+        user: response.data.user   // Typically contains id, name, email etc.
+      };
+      
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      toast.success("Registration successful!");
+      navigate('/userdashboard'); // Redirect to dashboard
+    }
     } catch (err) {
       const errorMessage = err.response?.data?.message ||
         err.message ||
@@ -138,6 +150,12 @@ const SignUp = () => {
       type: "text", 
       placeholder: "Enter Last Name",
       name: "lastName"
+    },
+    { 
+      label: "Department", 
+      type: "text", 
+      placeholder: "Enter Department",
+      name: "department"
     },
     {
       label: "MATRIC NUMBER",
@@ -271,7 +289,7 @@ const SignUp = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-12 rounded-full text-[#0149AD] border-[1px] border-[#0149AD] font-medium text-base outline-none transition duration-200 disabled:opacity-50"
+                className="w-full h-12 cursor-pointer rounded-full text-[#0149AD] border-[1px] border-[#0149AD] font-medium text-base outline-none transition duration-200 disabled:opacity-50"
               >
                 {isLoading ? "Signing Up..." : "Sign Up"}
               </button>

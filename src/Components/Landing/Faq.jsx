@@ -14,7 +14,7 @@ const Faq = () => {
     { id: 1, title: 'How do I create an account?', content: 'You can sign up using your matric number, university email, and a secure password on the login page.' },
     { id: 2, title: 'What documents do I need to upload?', content: 'Content for Accordion 2' },
     { id: 3, title: 'Can I track my clearance progress?', content: 'Content for Accordion 3' },
-    { id: 4, title: 'What happens if a department rejects my document?', content: 'Content for Accordion 4' },
+    { id: 4, title: 'What happens if documents are rejected?', content: 'Content for Accordion 4' },
     { id: 5, title: 'How do I access the admin dashboard?', content: 'Login using your staff credentials provided by the ICT unit or OCS system admin.' },
     { id: 6, title: 'What can I do as an admin?', content: 'Content for Accordion 6' },
     { id: 7, title: 'Can multiple admins access the system?', content: 'Content for Accordion 7' },

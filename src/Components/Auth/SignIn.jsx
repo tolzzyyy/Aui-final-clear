@@ -1,18 +1,103 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AuthLayout from "./AuthLayout";
 import BackArrowSvg from "../../assets/svg's/BackArrowSvg";
 import MailSvg from "../../assets/svg's/MailSvg";
-import CircleCheckSvg from "../../assets/svg's/CircleCheckSvg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import toastr from "toastr";
+import "toastr/build/toastr.min.css";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
+// Configure toastr
+toastr.options = {
+  closeButton: true,
+  debug: false,
+  newestOnTop: true,
+  progressBar: true,
+  positionClass: "toast-top-right",
+  preventDuplicates: false,
+  showDuration: "300",
+  hideDuration: "1000",
+  timeOut: "5000",
+  extendedTimeOut: "1000",
+  showEasing: "swing",
+  hideEasing: "linear",
+  showMethod: "fadeIn",
+  hideMethod: "fadeOut",
+};
 
 const SignIn = () => {
   const formRef = useRef(null);
   const inputRefs = useRef([]);
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
   // Initialize refs array
   useEffect(() => {
-    inputRefs.current = inputRefs.current.slice(0, 7);
+    inputRefs.current = inputRefs.current.slice(0, 2);
   }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Basic validation
+    if (!formData.email || !formData.password) {
+      toastr.error("Please fill in all fields");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post(
+        "https://finalclear-backend-5.onrender.com/api/login",
+        {
+          email: formData.email,
+          password: formData.password,
+        }
+      );
+
+      if (response.data) {
+        // Store user data
+        localStorage.setItem("user", JSON.stringify(response.data));
+
+        // Show success toast
+        toastr.success("Login successful! ");
+
+        // Redirect to dashboard
+        setTimeout(() => navigate("/userdashboard"), 1500);
+      }
+    } catch (error) {
+      let errorMessage = "Login failed. Please try again.";
+
+      if (error.response) {
+        // Server responded with error status (4xx, 5xx)
+        errorMessage = error.response.data?.message || errorMessage;
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = "Network error. Please check your connection.";
+      }
+
+      toastr.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Enter") {
@@ -20,7 +105,6 @@ const SignIn = () => {
       const nextIndex = index + 1;
       if (nextIndex < inputRefs.current.length) {
         inputRefs.current[nextIndex].focus();
-        // Smooth scroll to the input
         inputRefs.current[nextIndex].scrollIntoView({
           behavior: "smooth",
           block: "center",
@@ -45,20 +129,28 @@ const SignIn = () => {
     {
       label: "EMAIL ADDRESS",
       type: "email",
+      name: "email",
       icon: <MailSvg />,
       placeholder: "Enter Email",
     },
     {
       label: "PASSWORD",
-      type: "select",
-      placeholder: "Create password",
+      type: showPassword.password ? "text" : "password",
+      name: "password",
+      icons: showPassword.password ? (
+        <FaEyeSlash color="black" size={18} />
+      ) : (
+        <FaEye color="black" size={18} />
+      ),
+      placeholder: "Enter password",
       text: "Forgot Password?",
       path: "/forgotpassword",
     },
   ];
+
   return (
     <AuthLayout>
-      <div className="flex  md:px-8 py-[50px]  flex-col h-[100dvh] relative">
+      <div className="flex md:px-8 py-[50px] flex-col h-[100dvh] relative">
         <div className="pt-4 pb-2 px-4 sm:pb-4 w-full sm:px-6 shrink-0 ">
           <Link to="/signup" className="flex gap-3 items-center mb-4 sm:mb-6">
             <BackArrowSvg />
@@ -75,7 +167,10 @@ const SignIn = () => {
           </div>
         </div>
         <div className="flex-1 mt-4 overflow-y-auto overscroll-contain mb-10 hide-scrollbar px-4 pb-[env(safe-area-inset-bottom)]">
-          <form className="max-w-md mx-auto flex flex-col gap-[18px] pb-6">
+          <form
+            onSubmit={handleSubmit}
+            className="max-w-md mx-auto flex flex-col gap-[18px] pb-6"
+          >
             {formFields.map((field, index) => (
               <div key={index} className="flex flex-col gap-[11px]">
                 <p className="text-sm text-gray-600">{field.label}</p>
@@ -83,7 +178,10 @@ const SignIn = () => {
                   <input
                     ref={(el) => (inputRefs.current[index] = el)}
                     type={field.type}
+                    name={field.name}
                     placeholder={field.placeholder}
+                    value={formData[field.name]}
+                    onChange={handleChange}
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
@@ -94,30 +192,49 @@ const SignIn = () => {
                       {field.icon}
                     </p>
                   )}
-                  <Link
-                    className="float-right py-2 underline w-full"
-                    to={field.path}
-                  >
-                    <p className="w-full underline text-[11px] text-[#3355FF] text-right float-right">
-                      {field.text}
-                    </p>
-                  </Link>
+                  {field.icons && (
+                    <button
+                      type="button"
+                      className="absolute cursor-pointer right-3 top-3.5 text-gray-500 hover:text-gray-700"
+                      onClick={() =>
+                        setShowPassword((prev) => ({
+                          ...prev,
+                          password: !prev.password,
+                        }))
+                      }
+                    >
+                      {field.icons}
+                    </button>
+                  )}
+                  {field.text && (
+                    <Link
+                      className="float-right py-2 underline "
+                      to={field.path}
+                    >
+                      <p className="w-full underline text-[11px] text-[#3355FF] text-right float-right">
+                        {field.text}
+                      </p>
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}
 
-            <div className="mt-[11px] ">
+            <div className="mt-[11px]">
               <button
                 type="submit"
-                className="w-full h-12 rounded-full text-[#0149AD] border-[1px] border-[#0149AD] font-medium text-base  outline-none  transition duration-200"
+                disabled={isLoading}
+                className={`w-full h-12 cursor-pointer rounded-full text-[#0149AD] border-[1px] border-[#0149AD] font-medium text-base outline-none transition duration-200 ${
+                  isLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
-                Sign In
+                {isLoading ? "Signing In..." : "Sign In"}
               </button>
             </div>
           </form>
           <div className="mb-10 flex flex-col w-full items-center">
             <p className="text-center text-[#667185] text-[14px]">Or</p>
-            <div className=" text-[#000000B2] mt-5">
+            <div className="text-[#000000B2] mt-5">
               <p>
                 Don't Have An Account?{" "}
                 <Link className="text-[#0149AD]" to="/signup">
