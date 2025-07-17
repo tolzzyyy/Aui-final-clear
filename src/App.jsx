@@ -35,12 +35,19 @@ const App = () => {
           <Route path="/how-it-works" exact element={<Howitworks />} />
           <Route path="/faq" exact element={<Faq />} />
         </Route>
-          <Route path="/signup"  exact element={<SignUp />} />
-          <Route path="/signin"  exact element={<SignIn />} />
-          <Route path="/forgotpassword"  exact element={<ForgotPassword />} />
-          <Route path="/confirmation-code"  exact element={<ConfirmCode />} />
-          <Route path="/success"  exact element={<Success />} />
-        <Route path="/userdashboard" element={<UserLayout />}>
+        <Route path="/signup" exact element={<SignUp />} />
+        <Route path="/signin" exact element={<SignIn />} />
+        <Route path="/forgotpassword" exact element={<ForgotPassword />} />
+        <Route path="/confirmation-code" exact element={<ConfirmCode />} />
+        <Route path="/success" exact element={<Success />} />
+        <Route
+          path="/userdashboard"
+          element={
+            <ProtectedRoute>
+              <UserLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<UserDashboard />} />
         </Route>
         <Route path="/signup" exact element={<SignUp />} />
@@ -50,14 +57,6 @@ const App = () => {
         <Route path="/success" exact element={<Success />} />
         // Add this new route
         <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route
-          path="/userdashboard"
-          element={
-            <ProtectedRoute>
-              <UserLayout />
-            </ProtectedRoute>
-          }
-        ></Route>
       </Routes>
     </div>
   );
