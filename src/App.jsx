@@ -11,6 +11,7 @@ import ForgotPassword from "./Components/Auth/ForgotPassword";
 import ConfirmCode from "./Components/Auth/ConfirmCode";
 import Success from "./Components/Auth/Success";
 import UserLayout from "./Components/Users/UserLayout";
+import UserDashboard from "./Components/Users/UserDashboard";
 
 const App = () => {
   return (
@@ -28,7 +29,7 @@ const App = () => {
           <Route path="/confirmation-code"  exact element={<ConfirmCode />} />
           <Route path="/success"  exact element={<Success />} />
         <Route path="/userdashboard" element={<UserLayout />}>
-          
+          <Route index element={<UserDashboard />} />
         </Route>
       </Routes>
     </div>

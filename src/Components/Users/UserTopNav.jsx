@@ -118,7 +118,7 @@ const UserTopNav = () => {
                 <img src={userFace} alt="" className="w-full"/>
             </div>
             <div>
-                <h3 className="text-lg">Nonso Obed</h3>
+                <h3 className="text-lg">Malu Obiaga</h3>
                 <p className="text-xs text-[#A3A3A3] ">Software Engineering</p>
             </div>
             <div onClick={() => setLogoutOpen(!logOutOpen)} ref={dropdownRef}>
