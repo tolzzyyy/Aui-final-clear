@@ -53,51 +53,57 @@ const SignIn = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Basic validation
-    if (!formData.email || !formData.password) {
-      toastr.error("Please fill in all fields");
-      return;
-    }
+  // Basic validation
+  if (!formData.email || !formData.password) {
+    toastr.error("Please fill in all fields");
+    return;
+  }
 
-    setIsLoading(true);
+  setIsLoading(true);
 
-    try {
-      const response = await axios.post(
-        "https://finalclear-backend-5.onrender.com/api/login",
-        {
-          email: formData.email,
-          password: formData.password,
-        }
-      );
+  try {
+    const response = await axios.post(
+      "https://finalclear-backend-5.onrender.com/api/login",
+      {
+        email: formData.email,
+        password: formData.password,
+      }
+    );
 
-      if (response.data) {
-        // Store user data
-        localStorage.setItem("user", JSON.stringify(response.data));
+    if (response.data) {
+      // Store user data
+      localStorage.setItem("user", JSON.stringify(response.data));
 
-        // Show success toast
-        toastr.success("Login successful! ");
+      // Show success toast
+      toastr.success("Login successful!");
 
-        // Redirect to dashboard
+      // Check if user is admin
+      if (response.data.role === "admin") {
+        // Redirect to admin dashboard
+        setTimeout(() => navigate("/admindashboard"), 1500);
+      } else {
+        // Redirect to regular user dashboard
         setTimeout(() => navigate("/userdashboard"), 1500);
       }
-    } catch (error) {
-      let errorMessage = "Login failed. Please try again.";
-
-      if (error.response) {
-        // Server responded with error status (4xx, 5xx)
-        errorMessage = error.response.data?.message || errorMessage;
-      } else if (error.request) {
-        // Request was made but no response received
-        errorMessage = "Network error. Please check your connection.";
-      }
-
-      toastr.error(errorMessage);
-    } finally {
-      setIsLoading(false);
     }
-  };
+  } catch (error) {
+    let errorMessage = "Login failed. Please try again.";
+
+    if (error.response) {
+      // Server responded with error status (4xx, 5xx)
+      errorMessage = error.response.data?.message || errorMessage;
+    } else if (error.request) {
+      // Request was made but no response received
+      errorMessage = "Network error. Please check your connection.";
+    }
+
+    toastr.error(errorMessage);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Enter") {
