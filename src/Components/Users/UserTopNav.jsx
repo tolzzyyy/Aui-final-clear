@@ -114,15 +114,15 @@ const UserTopNav = () => {
             <NavLink
               to="/documents"
               className={({ isActive }) =>
-                ` ${isActive ? "bg-white rounded-full px-2 -mx-2 py-1" : ""}`
+                `${isActive ? "bg-white rounded-full px-4 py-2 -mx-2 " : ""}`
               }
             >
               My Documents
             </NavLink>
             <NavLink
-              to="/"
+              to="/status"
               className={({ isActive }) =>
-                ` ${isActive ? "bg-white rounded-full px-2 -mx-2 py-1" : ""}`
+                `${isActive ? "bg-white rounded-full px-4 py-2 -mx-2 " : ""}`
               }
             >
               Clearance Status
@@ -142,7 +142,7 @@ const UserTopNav = () => {
                 </div>
                 <div>
                   <h3 className="text-lg">{userData.firstName || 'User'}</h3>
-                  <p className="text-xs text-[#A3A3A3]">{userData.department || 'User'}</p>
+                  <p className="text-xs text-[#A3A3A3]">{userData.department || 'Software Engineering'}</p>
                 </div>
                 <div className="cursor-pointer" onClick={() => setLogoutOpen(!logOutOpen)} ref={dropdownRef}>
                   <FiChevronDown />

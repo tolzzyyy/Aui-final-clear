@@ -14,6 +14,8 @@ import ResetPassword from "./Components/Auth/ResetPassword";
 import UserDashboard from "./Components/Users/UserDashboard";
 import AdminDashboard from "./Components/Admin/AdminDashboard";
 import AdminLayout from "./Components/Admin/AdminLayout";
+import UserDocuments from "./Components/Users/UserDocuments";
+import UserStatus from "./Components/Users/UserStatus";
 
 const App = () => {
   const location = useLocation();
@@ -81,14 +83,15 @@ const App = () => {
 
         {/* Protected Routes */}
         <Route
-          path="/userdashboard"
           element={
             <ProtectedRoute>
               <UserLayout />
             </ProtectedRoute>
           }
         >
-          <Route index element={<UserDashboard />} />
+          <Route path="/userdashboard" index element={<UserDashboard />} />
+          <Route path="/documents" exact element={<UserDocuments />} />
+          <Route path="/status" exact element={<UserStatus />} />
         </Route>
         
         <Route
