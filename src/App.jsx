@@ -14,6 +14,8 @@ import UserLayout from "./Components/Users/UserLayout";
 import { Navigate } from "react-router-dom";
 import ResetPassword from "./Components/Auth/ResetPassword";
 import UserDashboard from "./Components/Users/UserDashboard";
+import UserDocuments from "./Components/Users/UserDocuments";
+import UserStatus from "./Components/Users/UserStatus";
 
 const App = () => {
   const ProtectedRoute = ({ children }) => {
@@ -41,14 +43,15 @@ const App = () => {
         <Route path="/confirmation-code" exact element={<ConfirmCode />} />
         <Route path="/success" exact element={<Success />} />
         <Route
-          path="/userdashboard"
           element={
             <ProtectedRoute>
               <UserLayout />
             </ProtectedRoute>
           }
         >
-          <Route index element={<UserDashboard />} />
+          <Route path="/userdashboard" index element={<UserDashboard />} />
+          <Route path="/documents" exact element={<UserDocuments />} />
+          <Route path="/status" exact element={<UserStatus />} />
         </Route>
         <Route path="/signup" exact element={<SignUp />} />
         <Route path="/signin" exact element={<SignIn />} />
