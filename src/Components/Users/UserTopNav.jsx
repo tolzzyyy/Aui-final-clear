@@ -101,7 +101,7 @@ const UserTopNav = () => {
               AUI FINAL CLEAR
             </h1>
           </div>
-          <div className="bg-[#C1C1C12B] lg:flex w-[410px] hidden text-[12px] rounded-full px-6 py-3 items-center gap-[40px]">
+          <div className="bg-[#C1C1C12B] lg:flex w-auto hidden text-[12px] rounded-full px-6 py-3 items-center gap-[40px]">
             <NavLink
               to="/userdashboard"
               className={({ isActive }) =>
@@ -110,7 +110,6 @@ const UserTopNav = () => {
             >
               Dashboard
             </NavLink>
-
             <NavLink
               to="/documents"
               className={({ isActive }) =>
@@ -118,6 +117,14 @@ const UserTopNav = () => {
               }
             >
               My Documents
+            </NavLink>
+            <NavLink
+              to="/submitdocuments"
+              className={({ isActive }) =>
+                `${isActive ? "bg-white rounded-full px-4 py-2 -mx-2 " : ""}`
+              }
+            >
+              Upload Documents
             </NavLink>
             <NavLink
               to="/status"

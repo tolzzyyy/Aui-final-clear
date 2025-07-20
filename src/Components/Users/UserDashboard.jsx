@@ -86,7 +86,7 @@ const UserDashboard = ({ targetPercentage = 50 }) => {
                   <p className='underline text-xs text-gray-600'>View All Documents</p>
                 </Link>
             </div>
-            <div className='w-full h-auto grid md:grid-cols-2 lg:grid-cols-4 space-y-8 items-center justify-center'>
+            <div className='w-full h-auto grid md:grid-cols-2 gap-8 lg:flex items-center justify-center lg:justify-between'>
                 {/* <div className='w-56 py-9 bg-white px-6 shadow-lg flex flex-col gap-4 justify-center items-center rounded-lg'>
                     <div className='w-full p-8 bg-blue-500 flex items-center justify-center text-white'>
                         <h1>S.E</h1>
@@ -105,11 +105,11 @@ const UserDashboard = ({ targetPercentage = 50 }) => {
                         </div>
                         <h2 className="text-lg">{course.title}</h2>
                         <p className="underline text-xs text-gray-600">{course.status}</p>
-                        <Link to='/documents'>
+                        {/* <Link to='/documents'>
                           <button className="bg-white cursor-pointer border-2 border-blue-500 px-5 py-2 rounded-full text-sm">
                               See More
                           </button>
-                        </Link>
+                        </Link> */}
                         </div>
                     ))}
             </div>

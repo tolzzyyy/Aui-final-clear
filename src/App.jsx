@@ -16,6 +16,7 @@ import ResetPassword from "./Components/Auth/ResetPassword";
 import UserDashboard from "./Components/Users/UserDashboard";
 import UserDocuments from "./Components/Users/UserDocuments";
 import UserStatus from "./Components/Users/UserStatus";
+import UserSubmitDocuments from "./Components/Users/UserSubmitDocuments";
 
 const App = () => {
   const ProtectedRoute = ({ children }) => {
@@ -51,6 +52,8 @@ const App = () => {
         >
           <Route path="/userdashboard" index element={<UserDashboard />} />
           <Route path="/documents" exact element={<UserDocuments />} />
+          <Route path="/submitdocuments" exact element={<UserSubmitDocuments />} />
+          {/* <Route path="/editdocuments" exact element={<UserDocuments />} /> */}
           <Route path="/status" exact element={<UserStatus />} />
         </Route>
         <Route path="/signup" exact element={<SignUp />} />

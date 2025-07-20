@@ -7,7 +7,7 @@ const courses = [
   {
     code: "S.E",
     title: "Software Engineering",
-    status: "Under Review",
+    status: "Pending",
     bgColor: "bg-blue-500", // optional for dynamic styling
   },
   {
@@ -19,7 +19,7 @@ const courses = [
   {
     code: "C.S",
     title: "Cyber Security",
-    status: "Pending",
+    status: "Not Done",
     bgColor: "bg-yellow-500",
   },
   {
@@ -53,7 +53,7 @@ const UserDocuments = () => {
             </div> */}
       </section>
 
-      <section className='mt-32 flex flex-col'>
+      <section className='mt-32 mb-20 flex flex-col'>
             {/* <div className='flex justify-between items-center'>
                 <h4 className='text-xl font-semibold'>Complete Clearance</h4>
                 <Link to='/documents'>
@@ -71,9 +71,9 @@ const UserDocuments = () => {
                         </div>
                         <h2 className="text-lg">{course.title}</h2>
                         <p className="underline text-xs text-gray-600">{course.status}</p>
-                        <Link to='/documents'>
+                        <Link to='/submitdocuments'>
                           <button className="bg-white cursor-pointer border-2 border-blue-500 px-5 py-2 rounded-full text-sm">
-                              See More
+                              Submit
                           </button>
                         </Link>
                         </div>
