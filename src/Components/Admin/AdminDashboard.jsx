@@ -79,7 +79,7 @@ const AdminDashboard = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-500">
-                    {student.matricNumber}
+                    {student.user.matricNumber}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">

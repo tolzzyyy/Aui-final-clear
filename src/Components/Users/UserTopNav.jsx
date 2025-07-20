@@ -82,10 +82,12 @@ const UserTopNav = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    window.location.href = '/signin'; // Or use navigate if you have react-router
-  };
+const handleLogout = () => {
+  localStorage.clear();           // ✅ clear all local storage
+  window.location.reload();       // ✅ force reload the app
+};
+
+
 
   if (loading) {
     return <div className="w-full bg-white h-[90px]"></div>; // Loading placeholder
@@ -236,16 +238,20 @@ const UserTopNav = () => {
       )}
 
       {/* Dropdown */}
-      {logOutOpen && (
-        <div className="absolute top-24 right-5 lg:right-28 w-40 bg-white shadow-lg rounded-lg p-4 z-[9999]">
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-          >
-            <CiLogout /> Logout
-          </button>
-        </div>
-      )}
+     {logOutOpen && (
+  <div
+    ref={dropdownRef} 
+    className="absolute top-24 right-5 lg:right-28 w-40 bg-white shadow-lg rounded-lg p-4 z-[9999]"
+  >
+    <button
+      onClick={handleLogout}
+      className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+    >
+      <CiLogout /> Logout
+    </button>
+  </div>
+)}
+
     </div>
   );
 };
