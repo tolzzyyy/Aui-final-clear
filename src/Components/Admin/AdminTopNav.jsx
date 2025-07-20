@@ -15,7 +15,7 @@ const notifications = [
 
 const latestThree = notifications.slice(0, 3);
 
-const UserTopNav = () => {
+const AdminTopNav = () => {
   const [open, setOpen] = useState(false);
   const [bellOpen, setbellOpen] = useState(false);
   const [logOutOpen, setLogoutOpen] = useState(false);
@@ -31,20 +31,15 @@ const UserTopNav = () => {
     setOpen(!open);
   };
 
-  useEffect(() => {
-  const storedData = localStorage.getItem('user');
-  if (storedData) {
-    try {
-      const parsedData = JSON.parse(storedData);
-      setUserData(parsedData.user); // ✅ this line fixes your bug
-    } catch (error) {
-      console.error('Error parsing localStorage data:', error);
-      localStorage.removeItem('user');
+useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user || user.role !== 'admin') {
+      window.location.href = '/signin';
+    } else {
+      setUserData(user);
     }
-  }
-   setLoading(false); // This was missing in your code
-}, []);
-
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     if (open) {
@@ -103,7 +98,7 @@ const UserTopNav = () => {
           </div>
           <div className="bg-[#C1C1C12B] lg:flex w-[410px] hidden text-[12px] rounded-full px-6 py-3 items-center gap-[40px]">
             <NavLink
-              to="/userdashboard"
+              to="/admindashboard"
               className={({ isActive }) =>
                 `${isActive ? "bg-white rounded-full px-4 py-2 -mx-2 " : ""}`
               }
@@ -135,20 +130,20 @@ const UserTopNav = () => {
               <FiBell size={25}/>
             </div>
 
-            {userData && (
+         
               <div className="flex relative gap-3 items-center">
                 <div className="w-15 h-15 flex items-center justify-center rounded-full bg-none">
                   <img src={userFace} alt="" className="w-full"/>
                 </div>
                 <div>
-                  <h3 className="text-lg">{userData.firstName || 'User'}</h3>
-                  <p className="text-xs text-[#A3A3A3]">{userData.department || 'User'}</p>
+                  <h3 className="text-lg">Admin</h3>
+                
                 </div>
                 <div className="cursor-pointer" onClick={() => setLogoutOpen(!logOutOpen)} ref={dropdownRef}>
                   <FiChevronDown />
                 </div>
               </div>
-            )}
+    
           </div>
 
           <div className="flex lg:hidden items-center gap-3">
@@ -167,7 +162,7 @@ const UserTopNav = () => {
         <div
           className={`
             fixed top-0 left-0 w-full h-screen bg-white z-40 
-            flex lg:hidden flex-col items-center justify-center gap-[40px]
+            flex flex-col items-center justify-center gap-[40px]
             transition-all duration-700 ease-in-out
             ${open ? "translate-y-0" : "-translate-y-full"}
           `}
@@ -201,14 +196,14 @@ const UserTopNav = () => {
             <CiLogout /> Logout
           </NavLink>
 
-          {userData && (
+       
             <div className="flex w-full px-[30px] flex-col items-center gap-5 mt-8">
               <div className="flex gap-3 items-center">
                 <div className="w-15 h-15 flex items-center justify-center rounded-full bg-none">
                   <img src={userFace} alt="" className="w-full"/>
                 </div>
                 <div>
-                  <h3 className="text-lg">{userData.firstName || 'User'}</h3>
+                  <h3 className="text-lg">{userData.role || 'User'}</h3>
                   <p className="text-xs text-[#A3A3A3]">Software Engineering</p>
                 </div>
                 <div className="hidden lg:flex">
@@ -216,7 +211,7 @@ const UserTopNav = () => {
                 </div>
               </div>
             </div>
-          )}
+      
         </div>
       </div>
 
@@ -250,4 +245,4 @@ const UserTopNav = () => {
   );
 };
 
-export default UserTopNav;
+export default AdminTopNav;
