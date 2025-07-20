@@ -79,7 +79,7 @@ const UserDashboard = ({ targetPercentage = 50 }) => {
           </Link>
         </div>
 
-        <div className='w-full h-auto grid  md:grid-cols-2 lg:grid-cols-4 space-y-8 items-center justify-center'>
+        <div className='w-full h-auto grid  md:grid-cols-2 gap-8 lg:flex items-center justify-center lg:justify-between'>
           {credentials.length > 0 ? (
             credentials.map((cred, index) => {
               const initials = cred.department
@@ -103,11 +103,11 @@ const UserDashboard = ({ targetPercentage = 50 }) => {
                   </div>
                   <h2 className='text-lg text-center'>{cred.department}</h2>
                    <p className={`underline ${statusColorMap[cred.status] || 'bg-gray-400'} text-xs 0`}>{cred.status}</p>
-                  <Link to='/documents'>
+                  {/* <Link to='/documents'>
                     <button className='bg-white cursor-pointer border-2 border-blue-500 px-5 py-2 rounded-full text-sm'>
                       See More
                     </button>
-                  </Link>
+                  </Link> */}
                 </div>
               );
             })

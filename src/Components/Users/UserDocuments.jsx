@@ -8,7 +8,37 @@ const statusColorMap = {
   'Under Review': 'bg-blue-500',
 };
 
+<<<<<<< HEAD
 const BASE_URL = 'https://finalclear-backend-11.onrender.com';
+=======
+
+const courses = [
+  {
+    code: "S.E",
+    title: "Software Engineering",
+    status: "Pending",
+    bgColor: "bg-blue-500", // optional for dynamic styling
+  },
+  {
+    code: "D.S",
+    title: "Data Science",
+    status: "Approved",
+    bgColor: "bg-green-500",
+  },
+  {
+    code: "C.S",
+    title: "Cyber Security",
+    status: "Not Done",
+    bgColor: "bg-yellow-500",
+  },
+  {
+    code: "I.T",
+    title: "Information Tech",
+    status: "Pending",
+    bgColor: "bg-pink-500",
+  },
+];
+>>>>>>> 28f5bef0eb25bc4a15c4edbda609b60cd559cce5
 
 const UserDocuments = () => {
   const [credentials, setCredentials] = useState([]);
@@ -72,6 +102,7 @@ const UserDocuments = () => {
         </div>
       </section>
 
+<<<<<<< HEAD
       <section className='mt-32 flex flex-col'>
         {loading ? (
           <div className='text-center text-gray-500 text-sm'>Loading documents...</div>
@@ -105,6 +136,34 @@ const UserDocuments = () => {
             ))}
           </div>
         )}
+=======
+      <section className='mt-32 mb-20 flex flex-col'>
+            {/* <div className='flex justify-between items-center'>
+                <h4 className='text-xl font-semibold'>Complete Clearance</h4>
+                <Link to='/documents'>
+                  <p className='underline text-xs text-gray-600'>View All Documents</p>
+                </Link>
+            </div> */}
+            <div className='w-full h-auto grid md:grid-cols-2 gap-8 lg:flex items-center justify-center lg:justify-between'>
+                  {courses.map((course, index) => (
+                        <div
+                        key={index}
+                        className="w-56 py-9 bg-white px-6 shadow-lg flex flex-col gap-4 justify-center items-center rounded-lg"
+                        >
+                        <div className={`w-full p-8 ${course.bgColor} flex items-center justify-center text-white`}>
+                            <h1>{course.code}</h1>
+                        </div>
+                        <h2 className="text-lg">{course.title}</h2>
+                        <p className="underline text-xs text-gray-600">{course.status}</p>
+                        <Link to='/submitdocuments'>
+                          <button className="bg-white cursor-pointer border-2 border-blue-500 px-5 py-2 rounded-full text-sm">
+                              Submit
+                          </button>
+                        </Link>
+                        </div>
+                    ))}
+            </div>
+>>>>>>> 28f5bef0eb25bc4a15c4edbda609b60cd559cce5
       </section>
     </div>
   );

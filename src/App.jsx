@@ -16,6 +16,7 @@ import AdminDashboard from "./Components/Admin/AdminDashboard";
 import AdminLayout from "./Components/Admin/AdminLayout";
 import UserDocuments from "./Components/Users/UserDocuments";
 import UserStatus from "./Components/Users/UserStatus";
+import UserSubmitDocuments from "./Components/Users/UserSubmitDocuments";
 
 const App = () => {
   const location = useLocation();
@@ -91,6 +92,8 @@ const App = () => {
         >
           <Route path="/userdashboard" index element={<UserDashboard />} />
           <Route path="/documents" exact element={<UserDocuments />} />
+          <Route path="/submitdocuments" exact element={<UserSubmitDocuments />} />
+          {/* <Route path="/editdocuments" exact element={<UserDocuments />} /> */}
           <Route path="/status" exact element={<UserStatus />} />
         </Route>
         
