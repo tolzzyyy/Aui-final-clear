@@ -129,7 +129,7 @@ const UserTopNav = () => {
               Upload 
             </NavLink>
             <NavLink
-              to="/"
+              to="/status"
               className={({ isActive }) =>
                 ` ${isActive ? "bg-white rounded-full px-2 -mx-2 py-1" : ""}`
               }
@@ -204,7 +204,7 @@ const UserTopNav = () => {
            Upload Documents
           </NavLink>
           <NavLink
-            to="/"
+            to="/status"
             className="text-[#000000B2] text-[12px]"
             onClick={() => setOpen(false)}
           >
