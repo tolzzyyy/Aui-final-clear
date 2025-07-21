@@ -1,6 +1,6 @@
 import React from "react";
 import img from "../../assets/Images/path74 (1).png";
-import authImage from "../../assets/images/image3.png";
+import authImage from "../../assets/Images/image3.png";
 import img6 from "../../assets/Images/path74 (2).png";
 
 const AuthLayout = ({ children }) => {
