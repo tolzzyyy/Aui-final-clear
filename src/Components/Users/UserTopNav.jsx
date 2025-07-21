@@ -82,11 +82,10 @@ const UserTopNav = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-const handleLogout = () => {
-  localStorage.clear();           // ✅ clear all local storage
-  window.location.reload();       // ✅ force reload the app
+ const handleLogout = () => {
+  localStorage.clear();
+  window.location.reload();
 };
-
 
 
   if (loading) {
@@ -103,7 +102,7 @@ const handleLogout = () => {
               AUI FINAL CLEAR
             </h1>
           </div>
-          <div className="bg-[#C1C1C12B] lg:flex w-auto hidden text-[12px] rounded-full px-6 py-3 items-center gap-[40px]">
+          <div className="bg-[#C1C1C12B] lg:flex w-[510px] hidden text-[12px] rounded-full px-6 py-3 items-center gap-[40px]">
             <NavLink
               to="/userdashboard"
               className={({ isActive }) =>
@@ -112,10 +111,11 @@ const handleLogout = () => {
             >
               Dashboard
             </NavLink>
+
             <NavLink
               to="/documents"
               className={({ isActive }) =>
-                `${isActive ? "bg-white rounded-full px-4 py-2 -mx-2 " : ""}`
+                ` ${isActive ? "bg-white rounded-full px-2 -mx-2 py-1" : ""}`
               }
             >
               My Documents
@@ -123,15 +123,15 @@ const handleLogout = () => {
             <NavLink
               to="/submitdocuments"
               className={({ isActive }) =>
-                `${isActive ? "bg-white rounded-full px-4 py-2 -mx-2 " : ""}`
+                ` ${isActive ? "bg-white rounded-full px-2 -mx-2 py-1" : ""}`
               }
             >
-              Upload Documents
+              Upload 
             </NavLink>
             <NavLink
-              to="/status"
+              to="/"
               className={({ isActive }) =>
-                `${isActive ? "bg-white rounded-full px-4 py-2 -mx-2 " : ""}`
+                ` ${isActive ? "bg-white rounded-full px-2 -mx-2 py-1" : ""}`
               }
             >
               Clearance Status
@@ -151,7 +151,7 @@ const handleLogout = () => {
                 </div>
                 <div>
                   <h3 className="text-lg">{userData.firstName || 'User'}</h3>
-                  <p className="text-xs text-[#A3A3A3]">{userData.department || 'Software Engineering'}</p>
+                  <p className="text-xs text-[#A3A3A3]">{userData.department || 'User'}</p>
                 </div>
                 <div className="cursor-pointer" onClick={() => setLogoutOpen(!logOutOpen)} ref={dropdownRef}>
                   <FiChevronDown />
@@ -173,27 +173,35 @@ const handleLogout = () => {
         </nav>
 
         {/* Mobile Menu */}
-        <div
-          className={`
-            fixed top-0 left-0 w-full h-screen bg-white z-40 
-            flex lg:hidden flex-col items-center justify-center gap-[40px]
-            transition-all duration-700 ease-in-out
-            ${open ? "translate-y-0" : "-translate-y-full"}
-          `}
-        >
+      <div
+  className={`
+    fixed top-0 left-0 w-full h-screen bg-white z-40 
+    flex lg:hidden flex-col items-center justify-center gap-[40px]
+    transition-transform duration-700 ease-in-out
+    transform ${open ? "translate-y-0" : "-translate-y-full"}
+  `}
+>
+
           <NavLink
-            to="/"
+            to="/userdashboard"
             className="text-[#000000B2] text-[12px]"
             onClick={() => setOpen(false)}
           >
             Dashboard
           </NavLink>
           <NavLink
-            to="/"
+            to="/documents"
             className="text-[#000000B2] text-[12px]"
             onClick={() => setOpen(false)}
           >
             My Documents
+          </NavLink>
+          <NavLink
+            to="/submitdocuments"
+            className="text-[#000000B2] text-[12px]"
+            onClick={() => setOpen(false)}
+          >
+           Upload Documents
           </NavLink>
           <NavLink
             to="/"
@@ -247,7 +255,7 @@ const handleLogout = () => {
       {/* Dropdown */}
      {logOutOpen && (
   <div
-    ref={dropdownRef} 
+    ref={dropdownRef} // ✅ Move ref here
     className="absolute top-24 right-5 lg:right-28 w-40 bg-white shadow-lg rounded-lg p-4 z-[9999]"
   >
     <button

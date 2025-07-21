@@ -63,10 +63,10 @@ const UserDocuments = () => {
   };
 
   return (
-    <div className='pt-20 px-[30px] lg:px-[50px] xl:px-[137px]'>
+    <div className='md:pt-20 pt-10 px-[30px] h-full mb-4 lg:px-[50px] xl:px-[137px]'>
       <section className='flex justify-between items-center'>
         <div className='flex flex-col gap-3'>
-          <h1 className='text-5xl'>
+          <h1 className=' text-2xl md:text-5xl'>
             Upload and manage all your required clearance documents in one place.
           </h1>
         </div>
@@ -78,14 +78,14 @@ const UserDocuments = () => {
         ) : credentials.length === 0 ? (
           <div className='text-center text-gray-500 text-sm'>No documents uploaded yet.</div>
         ) : (
-          <div className='w-full h-auto grid md:grid-cols-2 gap-8 lg:flex items-center justify-center lg:justify-between'>
+          <div className='w-full h-auto flex flex-col md:grid md:grid-cols-3 xl:grid-cols-4 gap-8  items-center justify-center lg:justify-between'>
             {credentials.map((cred) => (
               <div
                 key={cred._id}
-                className='w-56 py-9 bg-white px-6 shadow-lg flex flex-col gap-4 justify-center items-center rounded-lg'
+                className='w-full py-9 bg-white px-6 shadow-lg flex flex-col gap-4 justify-center items-center rounded-lg'
               >
                 <div
-                  className={`w-full p-8 rounded-[4px] ${statusColorMap[cred.status] || 'bg-gray-400'} flex items-center justify-center bg-green-500 text-white text-center text-[26px] font-semibold`}
+                  className={`w-full px-8 py-[50px] rounded-[4px] ${statusColorMap[cred.status] || 'bg-gray-400'} flex items-center justify-center bg-green-500 text-white text-center text-[26px] font-semibold`}
                 >
                   <h1>{getInitials(cred.department)}</h1>
                 </div>

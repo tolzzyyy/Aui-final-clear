@@ -61,25 +61,25 @@ const UserDashboard = ({ targetPercentage = 50 }) => {
   }
 
   return (
-    <div className='pt-20 px-[30px] lg:px-[50px] xl:px-[137px]'>
+    <div className='md:pt-20 pt-10 px-[30px] lg:px-[50px] xl:px-[137px]'>
       <section className='flex justify-between items-center'>
         <div className='flex flex-col gap-3'>
-          <h1 className='text-5xl'>Welcome, {userData.firstName}!</h1>
+          <h1 className=' text-2xl md:text-5xl'>Welcome, {userData.firstName}!</h1>
           <p className='text-sm text-gray-600'>
             You've completed clearance with {completedCount} out of {totalCount} departments.
           </p>
         </div>
       </section>
 
-      <section className='mt-[60px] flex flex-col gap-10'>
-        <div className='flex justify-between items-center'>
+      <section className='mt-[60px] w-full flex flex-col gap-10'>
+        <div className='flex flex-col md:flex-row gap-3 justify-between items-start'>
           <h4 className='text-xl font-semibold'>Complete Clearance</h4>
           <Link to='/documents'>
             <p className='underline text-xs text-gray-600'>View All Documents</p>
           </Link>
         </div>
 
-        <div className='w-full h-auto grid  md:grid-cols-2 gap-8 lg:flex items-center justify-center lg:justify-between'>
+        <div className='w-full h-auto flex flex-col md:grid md:grid-cols-3 xl:grid-cols-4 gap-8  items-center justify-center '>
           {credentials.length > 0 ? (
             credentials.map((cred, index) => {
               const initials = cred.department
@@ -96,18 +96,18 @@ const UserDashboard = ({ targetPercentage = 50 }) => {
               return (
                 <div
                   key={index}
-                  className='w-56 py-9 bg-white px-6 shadow-lg flex flex-col gap-4 justify-center items-center rounded-lg'
+                  className=' w-full  py-9 bg-white px-6 shadow-lg flex flex-col  gap-4 justify-center items-center rounded-lg'
                 >
-                  <div className={`w-full p-8 ${bgColor} bg-green-500 rounded-[4px] flex items-center justify-center text-white`}>
+                  <div className={`w-full px-8 ${bgColor} bg-green-500 py-[50px] rounded-[4px] flex text-[26px] items-center justify-center text-white`}>
                     <h1>{initials}</h1>
                   </div>
                   <h2 className='text-lg text-center'>{cred.department}</h2>
                    <p className={`underline ${statusColorMap[cred.status] || 'bg-gray-400'} text-xs 0`}>{cred.status}</p>
-                  {/* <Link to='/documents'>
+                  <Link to='/userdocuments'>
                     <button className='bg-white cursor-pointer border-2 border-blue-500 px-5 py-2 rounded-full text-sm'>
                       See More
                     </button>
-                  </Link> */}
+                  </Link>
                 </div>
               );
             })
