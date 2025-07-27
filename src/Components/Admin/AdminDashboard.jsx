@@ -74,7 +74,8 @@ const AdminDashboard = () => {
               <tr key={student._id || student.matricNumber}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
-                    {student.name}
+                 {student.user?.firstName} {student.user?.lastName}
+
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">

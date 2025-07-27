@@ -9,7 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const SignUp = () => {
-    const navigate = useNavigate(); // Add this line
+  const navigate = useNavigate();
   const formRef = useRef(null);
   const inputRefs = useRef([]);
   const [formData, setFormData] = useState({
@@ -21,15 +21,40 @@ const SignUp = () => {
     confirmPassword: "",
     phoneNumber: "",
     department: ""
-    
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   // Initialize refs array
-   useEffect(() => {
+  useEffect(() => {
     inputRefs.current = inputRefs.current.slice(0, 7);
+  }, []);
+
+  // Detect keyboard visibility
+  useEffect(() => {
+    const handleResize = () => {
+      const isKeyboardOpen = window.visualViewport.height < window.innerHeight * 0.7;
+      setKeyboardVisible(isKeyboardOpen);
+      
+      if (isKeyboardOpen) {
+        const activeElement = document.activeElement;
+        if (activeElement && activeElement.scrollIntoView) {
+          activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleResize);
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleResize);
+      }
+    };
   }, []);
 
   const handleChange = (e) => {
@@ -44,7 +69,6 @@ const SignUp = () => {
     e.preventDefault();
     setError(null);
 
-    // Basic validation
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
       setError("Passwords do not match");
@@ -90,17 +114,15 @@ const SignUp = () => {
       );
 
       if (response.data) {
-      // PROPERLY STORE USER DATA
-      const userData = {
-        token: response.data.token, // Make sure your backend returns these
-        user: response.data.user   // Typically contains id, name, email etc.
-      };
-      
-      localStorage.setItem('user', JSON.stringify(userData));
-      
-      toast.success("Registration successful!");
-      navigate('/userdashboard'); // Redirect to dashboard
-    }
+        const userData = {
+          token: response.data.token,
+          user: response.data.user
+        };
+        
+        localStorage.setItem('user', JSON.stringify(userData));
+        toast.success("Registration successful!");
+        navigate('/userdashboard');
+      }
     } catch (err) {
       const errorMessage = err.response?.data?.message ||
         err.message ||
@@ -126,16 +148,35 @@ const SignUp = () => {
     }
   };
 
+  const handleTouchStart = (e) => {
+    const touch = e.touches[0];
+    this.startY = touch.clientY;
+  };
+
   const handleTouchMove = (e) => {
-    e.preventDefault();
+    const touch = e.touches[0];
+    const y = touch.clientY;
+    const isScrolling = Math.abs(y - this.startY) > 5;
+    
+    if (!isScrolling) {
+      e.preventDefault();
+    }
   };
 
-  const handleFocus = () => {
-    document.addEventListener("touchmove", handleTouchMove, { passive: false });
+  const handleFocus = (e) => {
+    if ('ontouchstart' in window) {
+      const input = e.target;
+      input.addEventListener('touchstart', handleTouchStart, { passive: false });
+      input.addEventListener('touchmove', handleTouchMove, { passive: false });
+    }
   };
 
-  const handleBlur = () => {
-    document.removeEventListener("touchmove", handleTouchMove);
+  const handleBlur = (e) => {
+    if ('ontouchstart' in window) {
+      const input = e.target;
+      input.removeEventListener('touchstart', handleTouchStart);
+      input.removeEventListener('touchmove', handleTouchMove);
+    }
   };
 
   const formFields = [
@@ -188,13 +229,12 @@ const SignUp = () => {
       placeholder: "Enter phone number",
       name: "phoneNumber"
     },
-   
   ];
 
   if (success) {
     return (
       <AuthLayout>
-           <ToastContainer />
+        <ToastContainer />
         <div className="flex flex-col items-center justify-center h-[100dvh] p-4">
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-4">Registration Successful!</h2>
@@ -213,7 +253,7 @@ const SignUp = () => {
 
   return (
     <AuthLayout>
-       <ToastContainer
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -224,7 +264,7 @@ const SignUp = () => {
         draggable
         pauseOnHover
       />
-      <div className="flex md:px-8 py-[50px] flex-col h-[100dvh] relative">
+      <div className={`flex md:px-8 pt-[50px] md:py-[50px] flex-col ${keyboardVisible ? 'h-auto' : 'h-[100dvh]'} relative`}>
         <div className="pt-4 pb-2 px-4 sm:pb-4 w-full sm:px-6 shrink-0">
           <Link to="/" className="flex gap-3 items-center mb-4 sm:mb-6">
             <BackArrowSvg />
@@ -241,42 +281,46 @@ const SignUp = () => {
           </div>
         </div>
 
-        <div className="flex-1 mt-4 overflow-y-auto overscroll-contain mb-10 hide-scrollbar px-4 pb-[env(safe-area-inset-bottom)]">
-          {/* {error && (
-            <div className="mb-4 p-2 bg-red-100 text-red-700 rounded text-center">
-              {error}
-            </div>
-          )} */}
-          
+        <div 
+          className={`flex-1 mt-4 overflow-y-auto overscroll-contain mb-10 hide-scrollbar px-4 pb-[env(safe-area-inset-bottom)] ${
+            keyboardVisible ? 'max-h-[70vh]' : ''
+          }`}
+          style={{
+            maxHeight: keyboardVisible ? `${window.visualViewport?.height * 0.7}px` : 'none'
+          }}
+        >
           <form 
             onSubmit={handleSubmit}
             className="max-w-md mx-auto flex flex-col gap-[18px] pb-6"
             ref={formRef}
+            style={{
+              paddingBottom: keyboardVisible ? '20px' : '0'
+            }}
           >
-           {formFields.map((field, index) => (
-  <div key={index} className="flex flex-col gap-[11px]">
-    <p className="text-sm text-gray-600">{field.label}</p>
-    <div className="relative">
-      <input
-        ref={(el) => (inputRefs.current[index] = el)}
-        type={field.type}
-        name={field.name}
-        placeholder={field.placeholder}
-        value={formData[field.name] || ""}
-        onChange={handleChange}
-        onKeyDown={(e) => handleKeyDown(e, index)}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        className="w-full rounded-full h-12 border border-gray-300 pl-4 pr-10 text-base outline-none focus:ring-2 placeholder:text-gray-400"
-      />
-      {field.icon && (
-        <p className="absolute bg-white top-[14px] right-4">
-          {field.icon}
-        </p>
-      )}
-    </div>
-  </div>
-))}
+            {formFields.map((field, index) => (
+              <div key={index} className="flex flex-col gap-[11px]">
+                <p className="text-sm text-gray-600">{field.label}</p>
+                <div className="relative">
+                  <input
+                    ref={(el) => (inputRefs.current[index] = el)}
+                    type={field.type}
+                    name={field.name}
+                    placeholder={field.placeholder}
+                    value={formData[field.name] || ""}
+                    onChange={handleChange}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    className="w-full rounded-full h-12 border border-gray-300 pl-4 pr-10 text-base outline-none focus:ring-2 placeholder:text-gray-400"
+                  />
+                  {field.icon && (
+                    <p className="absolute bg-white top-[14px] right-4">
+                      {field.icon}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
 
             <div className="flex items-center mt-[11px] gap-[21px]">
               <CircleCheckSvg />
@@ -296,7 +340,7 @@ const SignUp = () => {
             </div>
           </form>
           
-          <div className="mb-10 flex flex-col w-full items-center">
+          <div className="mb-10 mt-5 flex flex-col w-full items-center">
             <p className="text-center text-[#667185] text-[14px]">Or</p>
             <div className="text-[#000000B2] mt-5">
               <p>
