@@ -22,10 +22,12 @@ const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Check auth status on route changes
+  
   useEffect(() => {
-    const publicRoutes = ["/", "/signin", "/signup", "/forgotpassword", "/features", "/faq", "/how-it-works", "/confirmation-code", "/success"];
-    const isProtectedRoute = !publicRoutes.includes(location.pathname);
+    const publicPaths = ["/", "/signin", "/signup", "/forgotpassword", "/features", "/faq", "/how-it-works", "/confirmation-code", "/success"];
+    const isResetPasswordPath = location.pathname.startsWith("/reset-password");
+    const isPublicRoute = publicPaths.includes(location.pathname) || isResetPasswordPath;
+    const isProtectedRoute = !isPublicRoute;
 
     try {
       const userData = localStorage.getItem("user");
@@ -36,7 +38,9 @@ const App = () => {
       }
     } catch (error) {
       console.error("Auth check failed:", error);
-      navigate("/signin", { replace: true });
+      if (isProtectedRoute) {
+        navigate("/signin", { replace: true });
+      }
     }
   }, [location, navigate]);
 
@@ -93,7 +97,6 @@ const App = () => {
           <Route path="/userdashboard" index element={<UserDashboard />} />
           <Route path="/documents" exact element={<UserDocuments />} />
           <Route path="/submitdocuments" exact element={<UserSubmitDocuments />} />
-          {/* <Route path="/editdocuments" exact element={<UserDocuments />} /> */}
           <Route path="/status" exact element={<UserStatus />} />
         </Route>
         

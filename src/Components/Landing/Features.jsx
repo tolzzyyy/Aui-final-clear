@@ -21,8 +21,8 @@ const Features = () => {
              A fully digital platform designed to simplify, automate, and speed up the final-year clearance process for students and administrators.
              </p>
              <div className="flex gap-[14px] mt-[32px] mx-auto xl:mx-0 items-center">
-               <button className="bg-[#3355FF] text-white text-[16px] w-[152px] h-[51px] flex items-center justify-center rounded-full"><Link>Get Started</Link></button>
-               <button className="text-black border border-black text-[16px] w-[152px] h-[51px] flex items-center justify-center rounded-full"><Link className="flex gap-[5px] items-center">How it Works <MdArrowOutward size={20} /></Link></button>
+          <Link to="/signup"><button className="bg-[#3355FF] text-white text-[16px] w-[152px] h-[51px] cursor-pointer flex items-center justify-center rounded-full">Get Started</button></Link>  
+           <Link to="/how-it-works"> <button className="text-black border cursor-pointer border-black text-[16px] w-[152px] h-[51px] flex items-center justify-center rounded-full"><p className="flex gap-[5px] items-center">How it Works <MdArrowOutward size={20} /></p></button> </Link>
              </div>
              <div className="flex flex-col items-center xl:items-start md:gap-[11px] mt-[50px]  lg:mt-[111px]">
                <p className="font-[600] text-center xl:text-left text-[16px]">Powered By:</p>

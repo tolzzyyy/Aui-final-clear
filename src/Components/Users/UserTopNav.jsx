@@ -16,6 +16,7 @@ const notifications = [
 const latestThree = notifications.slice(0, 3);
 
 const UserTopNav = () => {
+  const [profile, setProfile] = useState(false);
   const [open, setOpen] = useState(false);
   const [bellOpen, setbellOpen] = useState(false);
   const [logOutOpen, setLogoutOpen] = useState(false);
@@ -26,25 +27,27 @@ const UserTopNav = () => {
   const handlebellOpen = () => {
     setbellOpen(!bellOpen);
   };
+  const handleProfile = () => {
+    setProfile((prev) => !prev);
+  };
 
   const handleOpen = () => {
     setOpen(!open);
   };
 
   useEffect(() => {
-  const storedData = localStorage.getItem('user');
-  if (storedData) {
-    try {
-      const parsedData = JSON.parse(storedData);
-      setUserData(parsedData.user); // ✅ this line fixes your bug
-    } catch (error) {
-      console.error('Error parsing localStorage data:', error);
-      localStorage.removeItem('user');
+    const storedData = localStorage.getItem("user");
+    if (storedData) {
+      try {
+        const parsedData = JSON.parse(storedData);
+        setUserData(parsedData.user);
+      } catch (error) {
+        console.error("Error parsing localStorage data:", error);
+        localStorage.removeItem("user");
+      }
     }
-  }
-   setLoading(false); // This was missing in your code
-}, []);
-
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     if (open) {
@@ -82,20 +85,19 @@ const UserTopNav = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
- const handleLogout = () => {
-  localStorage.clear();
-  window.location.reload();
-};
-
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
 
   if (loading) {
-    return <div className="w-full bg-white h-[90px]"></div>; // Loading placeholder
+    return <div className="w-full bg-white h-[90px]"></div>;
   }
 
   return (
     <div>
       <div className="w-full overflow-hidden bg-white h-auto py-[30px] px-[30px] lg:px-[50px] xl:px-[137px]">
-        <nav className="flex relative justify-between items-center">
+        <nav className="flex relative h-full justify-between items-center">
           <div className="flex md:gap-3 gap-2 items-center">
             <img className="md:w-[69px] w-[50px]" src={logo} alt="" />
             <h1 className="md:text-[20px] text-[15px] thick-heading">
@@ -126,7 +128,7 @@ const UserTopNav = () => {
                 ` ${isActive ? "bg-white rounded-full px-2 -mx-2 py-1" : ""}`
               }
             >
-              Upload 
+              Upload
             </NavLink>
             <NavLink
               to="/status"
@@ -146,7 +148,7 @@ const UserTopNav = () => {
 
             {userData && (
               <div className="flex relative gap-3 items-center">
-                <div className="w-15 h-15 flex items-center justify-center rounded-full bg-none">
+                <div onClick={handleProfile} className="w-15 h-15 flex items-center justify-center rounded-full bg-none cursor-pointer">
                   <img src={userFace} alt="" className="w-full"/>
                 </div>
                 <div>
@@ -159,12 +161,16 @@ const UserTopNav = () => {
               </div>
             )}
           </div>
-
-          <div className="flex lg:hidden items-center gap-3">
-            <div
-              onClick={() => setbellOpen(!bellOpen)} 
-              className="w-12 h-12 flex lg:hidden items-center justify-center rounded-full bg-[#FAFAFA]">
-              <FiBell size={25}/>
+          
+          {/* Mobile controls - now with profile image next to hamburger */}
+          <div className="flex lg:hidden items-center gap-5">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full overflow-hidden">
+              <img 
+                src={userFace} 
+                alt="Profile" 
+                className="w-full h-full object-cover cursor-pointer"
+                onClick={handleProfile}
+              />
             </div>
             <div onClick={handleOpen} className="z-50 lg:hidden">
               {open ? <FaTimes size={24} /> : <FaBars size={24} />}
@@ -172,16 +178,15 @@ const UserTopNav = () => {
           </div>
         </nav>
 
-        {/* Mobile Menu */}
-      <div
-  className={`
-    fixed top-0 left-0 w-full h-screen bg-white z-40 
-    flex lg:hidden flex-col items-center justify-center gap-[40px]
-    transition-transform duration-700 ease-in-out
-    transform ${open ? "translate-y-0" : "-translate-y-full"}
-  `}
->
-
+        {/* Mobile Menu - Removed profile info from here */}
+        <div
+          className={`
+            fixed top-0 left-0 w-full h-screen bg-white z-40 
+            flex lg:hidden flex-col items-center justify-center gap-[40px]
+            transition-transform duration-700 ease-in-out
+            transform ${open ? "translate-y-0" : "-translate-y-full"}
+          `}
+        >
           <NavLink
             to="/userdashboard"
             className="text-[#000000B2] text-[12px]"
@@ -201,7 +206,7 @@ const UserTopNav = () => {
             className="text-[#000000B2] text-[12px]"
             onClick={() => setOpen(false)}
           >
-           Upload Documents
+            Upload Documents
           </NavLink>
           <NavLink
             to="/status"
@@ -217,56 +222,67 @@ const UserTopNav = () => {
           >
             <CiLogout /> Logout
           </NavLink>
-
-          {userData && (
-            <div className="flex w-full px-[30px] flex-col items-center gap-5 mt-8">
-              <div className="flex gap-3 items-center">
-                <div className="w-15 h-15 flex items-center justify-center rounded-full bg-none">
-                  <img src={userFace} alt="" className="w-full"/>
-                </div>
-                <div>
-                  <h3 className="text-lg">{userData.firstName || 'User'}</h3>
-                  <p className="text-xs text-[#A3A3A3]">Software Engineering</p>
-                </div>
-                <div className="hidden lg:flex">
-                  <FiChevronDown />
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
-      {/* Dropdown */}
-      {bellOpen && (
-        <div className="absolute top-24 right-5 lg:right-28 w-80 bg-white shadow-lg rounded-lg p-6 z-[9999]">
-          <p className="font-semibold text-gray-800 mb-4">Notifications</p>
-          <ul className="text-sm text-gray-600 space-y-4">
-            {latestThree.map((note) => (
-              <li key={note.id} className="flex justify-between">
-                <span>{note.message}</span>
-                <span className="text-xs text-gray-400">{note.time}</span>
-              </li>
-            ))}
-          </ul>
+      {/* Profile Panel (same as before) */}
+      <div 
+        className={`fixed inset-0 cursor-pointer z-50 bg-black/30 transition-all duration-700 ${
+          profile
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
+        onClick={handleProfile}
+      >
+        <div
+          className={`absolute top-0 cursor-arrow h-full right-0 bg-white shadow-lg transition-all duration-700 ${
+            profile ? "lg:w-[500px] w-[300px]" : "w-0 whitespace-nowrap"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div
+            className={`transition-all w-full duration-700 ${
+              profile
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none"
+            }`}
+          >
+            <div className="py-[50px] whitespace-nowrap flex flex-col gap-[5px] px-[20px] md:px-[35px]">
+              <div className="flex gap-2 text-[17px] md:text-[28px] items-center">
+                <h1>{userData.firstName || "User"}</h1>
+                <h1>{userData.lastName || "User"}</h1>
+              </div>
+              <div className="border-b-[#A3A3A3] border-b-[1px] pb-8">
+                <p className="text-[#A3A3A3] text-[12px]">
+                  {userData.department || "User"}
+                </p>
+              </div>
+              <div className="border-b-[#A3A3A3] flex flex-col gap-3 mt-[35px] ">
+                <p className="text-[12px] text-[#A3A3A3]">Email Address:</p>
+                <h1 className=" text-[17px] md:text-[28px]">{userData.email || "User"}</h1>
+              </div>
+              <div className="border-b-[#A3A3A3] flex flex-col gap-3 mt-[35px] ">
+                <p className="text-[12px] text-[#A3A3A3]">Matric Number:</p>
+                <h1 className=" text-[17px] md:text-[28px]">
+                  {userData.matricNumber || "User"}
+                </h1>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="flex absolute bottom-[50px] cursor-pointer items-center gap-[22px] w-full text-left py-2 text-sm"
+              >
+                <div className="rotate-180 flex justify-center items-center w-[64px] bg-[#FF00000D] h-[64px] rounded-full">
+                  <CiLogout className="text-black" size={24} />
+                </div>
+                <p className=" text-[17px] md:text-[20px]">Logout</p>
+              </button>
+            </div>
+          </div>
         </div>
-      )}
+      </div>
 
-      {/* Dropdown */}
-     {logOutOpen && (
-  <div
-    ref={dropdownRef} // ✅ Move ref here
-    className="absolute top-24 right-5 lg:right-28 w-40 bg-white shadow-lg rounded-lg p-4 z-[9999]"
-  >
-    <button
-      onClick={handleLogout}
-      className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-    >
-      <CiLogout /> Logout
-    </button>
-  </div>
-)}
-
+    
+    
     </div>
   );
 };

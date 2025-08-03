@@ -26,34 +26,34 @@ const SignUp = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const resizeTimeout = useRef(null);
 
-  // Initialize refs array
   useEffect(() => {
-    inputRefs.current = inputRefs.current.slice(0, 7);
+    inputRefs.current = inputRefs.current.slice(0, 8);
+    return () => {
+      if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
+    };
   }, []);
 
-  // Detect keyboard visibility
   useEffect(() => {
     const handleResize = () => {
-      const isKeyboardOpen = window.visualViewport.height < window.innerHeight * 0.7;
-      setKeyboardVisible(isKeyboardOpen);
-      
-      if (isKeyboardOpen) {
-        const activeElement = document.activeElement;
-        if (activeElement && activeElement.scrollIntoView) {
-          activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }
+      if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
+
+      resizeTimeout.current = setTimeout(() => {
+        const isKeyboardOpen = window.visualViewport?.height < window.innerHeight * 0.7;
+        setKeyboardVisible(isKeyboardOpen);
+      }, 100);
     };
 
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleResize);
+      window.visualViewport.addEventListener("resize", handleResize);
     }
 
     return () => {
       if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', handleResize);
+        window.visualViewport.removeEventListener("resize", handleResize);
       }
+      if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
     };
   }, []);
 
@@ -71,23 +71,13 @@ const SignUp = () => {
 
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
-      setError("Passwords do not match");
-      return;
+      return setError("Passwords do not match");
     }
 
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.matricNumber ||
-      !formData.email ||
-      !formData.password ||
-      !formData.confirmPassword ||
-      !formData.phoneNumber ||
-      !formData.department
-    ) {
+    const isEmptyField = Object.values(formData).some((v) => v.trim() === "");
+    if (isEmptyField) {
       toast.error("Please fill in all required fields");
-      setError("Please fill in all required fields");
-      return;
+      return setError("Please fill in all required fields");
     }
 
     try {
@@ -96,20 +86,9 @@ const SignUp = () => {
       
       const response = await axios.post(
         "https://finalclear-backend-11.onrender.com/api/register",
+        formData,
         {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          matricNumber: formData.matricNumber,
-          email: formData.email,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword,
-          phoneNumber: formData.phoneNumber,
-          department: formData.department,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" }
         }
       );
 
@@ -118,15 +97,12 @@ const SignUp = () => {
           token: response.data.token,
           user: response.data.user
         };
-        
         localStorage.setItem('user', JSON.stringify(userData));
         toast.success("Registration successful!");
         navigate('/userdashboard');
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.message ||
-        err.message ||
-        "Registration failed. Please try again.";
+      const errorMessage = err.response?.data?.message || err.message || "Registration failed. Please try again.";
       toast.error(errorMessage);
       setError(errorMessage);
     } finally {
@@ -139,96 +115,51 @@ const SignUp = () => {
       e.preventDefault();
       const nextIndex = index + 1;
       if (nextIndex < inputRefs.current.length) {
-        inputRefs.current[nextIndex].focus();
-        inputRefs.current[nextIndex].scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
+        setTimeout(() => {
+          inputRefs.current[nextIndex]?.focus({ preventScroll: true });
+        }, 50);
+      } else {
+        e.target.blur();
       }
     }
   };
 
   const handleTouchStart = (e) => {
     const touch = e.touches[0];
-    this.startY = touch.clientY;
+    e.target.dataset.startY = touch.clientY;
   };
 
   const handleTouchMove = (e) => {
     const touch = e.touches[0];
-    const y = touch.clientY;
-    const isScrolling = Math.abs(y - this.startY) > 5;
-    
-    if (!isScrolling) {
+    const startY = e.target.dataset.startY;
+    if (startY && Math.abs(touch.clientY - startY) < 5) {
       e.preventDefault();
     }
   };
 
   const handleFocus = (e) => {
     if ('ontouchstart' in window) {
-      const input = e.target;
-      input.addEventListener('touchstart', handleTouchStart, { passive: false });
-      input.addEventListener('touchmove', handleTouchMove, { passive: false });
+      e.target.addEventListener('touchstart', handleTouchStart, { passive: false });
+      e.target.addEventListener('touchmove', handleTouchMove, { passive: false });
     }
   };
 
   const handleBlur = (e) => {
     if ('ontouchstart' in window) {
-      const input = e.target;
-      input.removeEventListener('touchstart', handleTouchStart);
-      input.removeEventListener('touchmove', handleTouchMove);
+      e.target.removeEventListener('touchstart', handleTouchStart);
+      e.target.removeEventListener('touchmove', handleTouchMove);
     }
   };
 
   const formFields = [
-    { 
-      label: "FIRST NAME", 
-      type: "text", 
-      placeholder: "Enter First Name",
-      name: "firstName"
-    },
-    { 
-      label: "LAST NAME", 
-      type: "text", 
-      placeholder: "Enter Last Name",
-      name: "lastName"
-    },
-    { 
-      label: "Department", 
-      type: "text", 
-      placeholder: "Enter Department",
-      name: "department"
-    },
-    {
-      label: "MATRIC NUMBER",
-      type: "text",
-      placeholder: "Enter Matric Number",
-      name: "matricNumber"
-    },
-    {
-      label: "EMAIL ADDRESS",
-      type: "email",
-      icon: <MailSvg />,
-      placeholder: "Enter Email",
-      name: "email"
-    },
-    { 
-      label: "PASSWORD", 
-      type: "password", 
-      placeholder: "Create password",
-      name: "password"
-    },
-    {
-      label: "CONFIRM PASSWORD",
-      type: "password",
-      placeholder: "Confirm password",
-      name: "confirmPassword"
-    },
-    { 
-      label: "PHONE NUMBER", 
-      type: "tel", 
-      placeholder: "Enter phone number",
-      name: "phoneNumber"
-    },
+    { label: "FIRST NAME", type: "text", placeholder: "Enter First Name", name: "firstName" },
+    { label: "LAST NAME", type: "text", placeholder: "Enter Last Name", name: "lastName" },
+    { label: "Department", type: "text", placeholder: "Enter Department", name: "department" },
+    { label: "MATRIC NUMBER", type: "text", placeholder: "Enter Matric Number", name: "matricNumber" },
+    { label: "EMAIL ADDRESS", type: "email", placeholder: "Enter Email", name: "email", icon: <MailSvg /> },
+    { label: "PASSWORD", type: "password", placeholder: "Create password", name: "password" },
+    { label: "CONFIRM PASSWORD", type: "password", placeholder: "Confirm password", name: "confirmPassword" },
+    { label: "PHONE NUMBER", type: "tel", placeholder: "Enter phone number", name: "phoneNumber" },
   ];
 
   if (success) {
@@ -239,10 +170,7 @@ const SignUp = () => {
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-4">Registration Successful!</h2>
             <p className="mb-6">Your account has been created successfully.</p>
-            <Link
-              to="/signin"
-              className="bg-[#0149AD] text-white px-6 py-2 rounded-full"
-            >
+            <Link to="/signin" className="bg-[#0149AD] text-white px-6 py-2 rounded-full">
               Sign In
             </Link>
           </div>
@@ -253,24 +181,13 @@ const SignUp = () => {
 
   return (
     <AuthLayout>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      <div className={`flex md:px-8 pt-[50px] md:py-[50px] flex-col ${keyboardVisible ? 'h-auto' : 'h-[100dvh]'} relative`}>
+      <ToastContainer position="top-right" autoClose={5000} />
+<div className="flex flex-col md:px-8 pt-[50px] md:py-[50px] h-[100dvh] relative">
         <div className="pt-4 pb-2 px-4 sm:pb-4 w-full sm:px-6 shrink-0">
           <Link to="/" className="flex gap-3 items-center mb-4 sm:mb-6">
             <BackArrowSvg />
             <p className="font-[400] text-sm sm:text-base">Back</p>
           </Link>
-
           <div className="mb-4">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl text-center font-medium">
               Create an Account
@@ -281,21 +198,11 @@ const SignUp = () => {
           </div>
         </div>
 
-        <div 
-          className={`flex-1 mt-4 overflow-y-auto overscroll-contain mb-10 hide-scrollbar px-4 pb-[env(safe-area-inset-bottom)] ${
-            keyboardVisible ? 'max-h-[70vh]' : ''
-          }`}
-          style={{
-            maxHeight: keyboardVisible ? `${window.visualViewport?.height * 0.7}px` : 'none'
-          }}
-        >
+        <div className="flex-1 mt-4 overflow-y-auto overscroll-contain mb-10 hide-scrollbar px-4 pb-[env(safe-area-inset-bottom)]">
           <form 
             onSubmit={handleSubmit}
-            className="max-w-md mx-auto flex flex-col gap-[18px] pb-6"
             ref={formRef}
-            style={{
-              paddingBottom: keyboardVisible ? '20px' : '0'
-            }}
+            className="max-w-md mx-auto flex flex-col gap-[18px] pb-6"
           >
             {formFields.map((field, index) => (
               <div key={index} className="flex flex-col gap-[11px]">
@@ -314,9 +221,9 @@ const SignUp = () => {
                     className="w-full rounded-full h-12 border border-gray-300 pl-4 pr-10 text-base outline-none focus:ring-2 placeholder:text-gray-400"
                   />
                   {field.icon && (
-                    <p className="absolute bg-white top-[14px] right-4">
+                    <span className="absolute bg-white top-[14px] right-4">
                       {field.icon}
-                    </p>
+                    </span>
                   )}
                 </div>
               </div>
@@ -339,7 +246,7 @@ const SignUp = () => {
               </button>
             </div>
           </form>
-          
+
           <div className="mb-10 mt-5 flex flex-col w-full items-center">
             <p className="text-center text-[#667185] text-[14px]">Or</p>
             <div className="text-[#000000B2] mt-5">
