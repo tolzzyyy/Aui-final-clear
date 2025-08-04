@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import toastr from "toastr";
 import "toastr/build/toastr.min.css";
@@ -22,6 +22,7 @@ toastr.options = {
 };
 
 const UserSubmitDocuments = () => {
+  const inputRefs = useRef([]);
   const [formData, setFormData] = useState({
     name: "",
     department: "",
@@ -31,6 +32,37 @@ const UserSubmitDocuments = () => {
     jambAdmissionLetter: null,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const resizeTimeout = useRef(null);
+
+  useEffect(() => {
+    inputRefs.current = inputRefs.current.slice(0, 8);
+    return () => {
+      if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
+
+      resizeTimeout.current = setTimeout(() => {
+        const isKeyboardOpen = window.visualViewport?.height < window.innerHeight * 0.7;
+        setKeyboardVisible(isKeyboardOpen);
+      }, 100);
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", handleResize);
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener("resize", handleResize);
+      }
+      if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -88,10 +120,9 @@ const UserSubmitDocuments = () => {
   };
 
   return (
-    <div className="flex flex-col pb-[100px] px-[30px] md:px-8 pt-[20px] md:pb-[40px] h-[100dvh] relative">
-      
+    <div className="flex flex-col h-[calc(100vh-130px)] overflow-hidden px-[30px] md:px-8 pt-0px] md:py-[50px] md:pb-[40px] relative">
       {/* Fixed header section */}
-      <div className="pt-4 pb-2 px-4 sm:pb-4 w-full sm:px-6 shrink-0">
+      <div className=" bg-white pt-4 pb-2 px-4 sm:pb-4 w-full sm:px-6">
         <div className="mb-4">
           <h1 className="text-2xl sm:text-3xl text-center font-medium">
             Upload Documents
@@ -103,10 +134,10 @@ const UserSubmitDocuments = () => {
       </div>
 
       {/* Scrollable form container */}
-      <div className="flex-1 mt-4 overflow-y-auto overscroll-contain mb-6 md:mb-10 hide-scrollbar px-4 pb-[env(safe-area-inset-bottom)]">
+      <div className="flex-1 overflow-y-auto overscroll-contain mb-10 hide-scrollbar px-4 pb-[env(safe-area-inset-bottom)]">
         <form 
           onSubmit={handleSubmit}
-          className="max-w-md mx-auto mb-4 flex flex-col gap-[18px] pb-6"
+          className="max-w-md mx-auto flex flex-col gap-[18px] pb-6"
         >
           {/* Text inputs */}
           {[
@@ -118,6 +149,7 @@ const UserSubmitDocuments = () => {
               <label className="text-sm text-gray-600">{field.label}</label>
               <input
                 type={field.type}
+                ref={(el) => (inputRefs.current[index] = el)}
                 name={field.name}
                 placeholder={field.placeholder}
                 onChange={handleChange}
