@@ -63,7 +63,7 @@ const UserDocuments = () => {
   };
 
   return (
-    <div className='md:pt-20 pt-10 px-[30px] h-full mb-4 lg:px-[50px] xl:px-[137px]'>
+    <div className='  px-[30px] pt-[100px] md:pt-[150px] h-full mb-4 lg:px-[50px] xl:px-[137px]'>
       <section className='flex justify-between items-center'>
         <div className='flex flex-col gap-3'>
           <h1 className=' text-2xl md:text-5xl'>

@@ -97,7 +97,7 @@ const App = () => {
           <Route path="/userdashboard" index element={<UserDashboard />} />
           <Route path="/documents" exact element={<UserDocuments />} />
           <Route path="/submitdocuments" exact element={<UserSubmitDocuments />} />
-          <Route path="/status" exact element={<UserStatus />} />
+          {/* <Route path="/status" exact element={<UserStatus />} /> */}
         </Route>
         
         <Route

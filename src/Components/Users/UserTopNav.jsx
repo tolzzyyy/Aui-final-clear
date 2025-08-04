@@ -89,7 +89,7 @@ const UserTopNav = () => {
 
   return (
     <div>
-      <div className="w-full overflow-hidden bg-white h-auto py-[30px] px-[30px] lg:px-[50px] xl:px-[137px]">
+      <div className="w-full fixed overflow-hidden bg-white h-auto py-[30px] px-[30px] lg:px-[50px] xl:px-[137px]">
         <nav className="flex relative h-full justify-between items-center">
           <div className="flex md:gap-3 gap-2 items-center">
             <img className="md:w-[69px] w-[50px]" src={logo} alt="" />
@@ -97,7 +97,7 @@ const UserTopNav = () => {
               AUI FINAL CLEAR
             </h1>
           </div>
-          <div className="bg-[#C1C1C12B] lg:flex w-[510px] hidden text-[12px] rounded-full px-6 py-3 items-center gap-[40px]">
+          <div className="bg-[#C1C1C12B] lg:flex w-[400px] justify-center hidden text-[12px] rounded-full px-6 py-3 items-center gap-[40px]">
             <NavLink
               to="/userdashboard"
               className={({ isActive }) =>
@@ -123,14 +123,14 @@ const UserTopNav = () => {
             >
               Upload
             </NavLink>
-            <NavLink
+            {/* <NavLink
               to="/status"
               className={({ isActive }) =>
                 ` ${isActive ? "bg-white rounded-full px-2 -mx-2 py-1" : ""}`
               }
             >
               Clearance Status
-            </NavLink>
+            </NavLink> */}
           </div>
           <div className="relative items-center lg:flex hidden gap-3">
 
@@ -193,13 +193,13 @@ const UserTopNav = () => {
           >
             Upload Documents
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/status"
             className="text-[#000000B2] text-[12px]"
             onClick={() => setOpen(false)}
           >
             Clearance Status
-          </NavLink>
+          </NavLink> */}
           <NavLink
             to="/"
             className="text-[#000000B2] text-[12px] flex items-center gap-2"

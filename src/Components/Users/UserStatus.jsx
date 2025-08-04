@@ -2,7 +2,7 @@ import React from 'react'
 
 const UserStatus = () => {
   return (
-    <div className='pt-20 px-[30px] lg:px-[50px] xl:px-[137px]'>
+    <div className='pt-[100px] md:pt-[150px] px-[30px] lg:px-[50px] xl:px-[137px]'>
       
       <section className='flex justify-between items-center'>
             <div className='flex flex-col gap-3'>

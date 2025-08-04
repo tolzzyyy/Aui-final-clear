@@ -54,14 +54,14 @@ const UserDashboard = ({ targetPercentage = 50 }) => {
 
   if (!userData) {
     return (
-      <div className="pt-20 px-[30px] lg:px-[50px] xl:px-[137px]">
+      <div className="pt-[100px] md:pt-[150px] px-[30px] lg:px-[50px] xl:px-[137px]">
         <p className="text-lg text-gray-600">Loading user data...</p>
       </div>
     );
   }
 
   return (
-    <div className='md:pt-20 pt-10 px-[30px] lg:px-[50px] xl:px-[137px]'>
+    <div className='pt-[150px] px-[30px] lg:px-[50px] xl:px-[137px]'>
       <section className='flex justify-between items-center'>
         <div className='flex flex-col gap-3'>
           <h1 className=' text-2xl md:text-5xl'>Welcome, {userData.firstName}!</h1>

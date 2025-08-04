@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import toastr from "toastr";
 import "toastr/build/toastr.min.css";
-import UserTopNav from "./UserTopNav";
 
 toastr.options = {
   closeButton: true,
@@ -23,6 +22,7 @@ toastr.options = {
 
 const UserSubmitDocuments = () => {
   const inputRefs = useRef([]);
+  const formContainerRef = useRef(null);
   const [formData, setFormData] = useState({
     name: "",
     department: "",
@@ -33,44 +33,48 @@ const UserSubmitDocuments = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const resizeTimeout = useRef(null);
 
   useEffect(() => {
-    inputRefs.current = inputRefs.current.slice(0, 8);
-    return () => {
-      if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
-    };
+    inputRefs.current = inputRefs.current.slice(0, 6);
   }, []);
 
   useEffect(() => {
     const handleResize = () => {
-      if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
-
-      resizeTimeout.current = setTimeout(() => {
-        const isKeyboardOpen = window.visualViewport?.height < window.innerHeight * 0.7;
-        setKeyboardVisible(isKeyboardOpen);
-      }, 100);
+      const isKeyboardOpen = window.visualViewport?.height < window.innerHeight * 0.7;
+      setKeyboardVisible(isKeyboardOpen);
+      
+      if (isKeyboardOpen) {
+        const activeElement = document.activeElement;
+        if (activeElement && inputRefs.current.includes(activeElement)) {
+          setTimeout(() => {
+            activeElement.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center',
+              inline: 'nearest'
+            });
+          }, 100);
+        }
+      }
     };
 
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", handleResize);
+    const viewport = window.visualViewport;
+    if (viewport) {
+      viewport.addEventListener('resize', handleResize);
     }
 
     return () => {
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener("resize", handleResize);
+      if (viewport) {
+        viewport.removeEventListener('resize', handleResize);
       }
-      if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
     };
   }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (files) {
-      setFormData((prev) => ({ ...prev, [name]: files[0] }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      [name]: files ? files[0] : value
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -82,8 +86,6 @@ const UserSubmitDocuments = () => {
 
     try {
       setIsLoading(true);
-      toastr.info("Uploading your documents...");
-
       const userData = localStorage.getItem("user");
       const token = userData ? JSON.parse(userData)?.token : null;
 
@@ -103,16 +105,11 @@ const UserSubmitDocuments = () => {
       await axios.post(
         "https://finalclear-backend-5.onrender.com/api/credentials/upload",
         data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       toastr.success("Documents uploaded successfully!");
     } catch (error) {
-      console.error(error);
       toastr.error("Upload failed. Please try again.");
     } finally {
       setIsLoading(false);
@@ -120,51 +117,65 @@ const UserSubmitDocuments = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-130px)] overflow-hidden px-[30px] md:px-8 pt-0px] md:py-[50px] md:pb-[40px] relative">
-      {/* Fixed header section */}
-      <div className=" bg-white pt-4 pb-2 px-4 sm:pb-4 w-full sm:px-6">
-        <div className="mb-4">
-          <h1 className="text-2xl sm:text-3xl text-center font-medium">
-            Upload Documents
-          </h1>
-          <p className="text-[#00000099] text-sm sm:text-base text-center mt-1">
-            Submit the necessary files for your clearance process
-          </p>
-        </div>
+    <div className="flex flex-col h-[100dvh] pt-[100px] md:pt-[150px] px-[30px] lg:px-[50px] xl:px-[137px] py-[40px] overflow-hidden bg-white">
+      {/* Fixed Header - won't scroll */}
+      <div className="shrink-0 bg-white pt-4 pb-2 px-4 sm:pb-4 sm:px-6 ">
+        <h1 className="text-2xl sm:text-3xl text-center font-medium">
+          Upload Documents
+        </h1>
+        <p className="text-[#00000099] text-sm sm:text-base text-center mt-1">
+          Submit the necessary files for your clearance process
+        </p>
       </div>
 
-      {/* Scrollable form container */}
-      <div className="flex-1 overflow-y-auto overscroll-contain mb-10 hide-scrollbar px-4 pb-[env(safe-area-inset-bottom)]">
+      {/* Scrollable Content Container */}
+      <div 
+        ref={formContainerRef}
+        className="flex-1 overflow-y-auto overscroll-contain px-4"
+        style={{
+          paddingBottom: keyboardVisible ? '200px' : '20px',
+          scrollBehavior: 'smooth'
+        }}
+      >
         <form 
-          onSubmit={handleSubmit}
-          className="max-w-md mx-auto flex flex-col gap-[18px] pb-6"
+          onSubmit={handleSubmit} 
+          className="max-w-md mx-auto flex flex-col gap-4 py-6"
         >
-          {/* Text inputs */}
           {[
             { label: "Name", name: "name", type: "text", placeholder: "Enter full name" },
             { label: "Department", name: "department", type: "text", placeholder: "Enter department" },
             { label: "Matric Number", name: "matricNumber", type: "text", placeholder: "Enter matric number" },
           ].map((field, index) => (
-            <div key={index} className="flex flex-col gap-2">
+            <div key={index} className="flex flex-col gap-1">
               <label className="text-sm text-gray-600">{field.label}</label>
               <input
+                ref={el => inputRefs.current[index] = el}
                 type={field.type}
-                ref={(el) => (inputRefs.current[index] = el)}
                 name={field.name}
-                placeholder={field.placeholder}
+                value={formData[field.name]}
                 onChange={handleChange}
-                className="w-full rounded-full h-12 border border-gray-300 px-4 text-base outline-none focus:ring-2 focus:ring-black focus:border-transparent placeholder:text-gray-400"
+                placeholder={field.placeholder}
+                className="w-full rounded-full h-12 border border-gray-300 px-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                onFocus={() => {
+                  if (keyboardVisible && formContainerRef.current) {
+                    setTimeout(() => {
+                      inputRefs.current[index]?.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                      });
+                    }, 100);
+                  }
+                }}
               />
             </div>
           ))}
 
-          {/* File inputs with custom styling */}
           {[
             { label: "JAMB UTME Result", name: "jambUtmeResult" },
             { label: "O-Level Result", name: "oLevelResult" },
             { label: "JAMB Admission Letter", name: "jambAdmissionLetter" },
           ].map((field, index) => (
-            <div key={index + 3} className="flex flex-col gap-2">
+            <div key={index + 3} className="flex flex-col gap-1">
               <label className="text-sm text-gray-600">{field.label}</label>
               <div className="relative">
                 <input
@@ -173,8 +184,8 @@ const UserSubmitDocuments = () => {
                   onChange={handleChange}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
-                <div className="w-full rounded-full h-12 border border-gray-300 px-4 flex items-center text-gray-400">
-                  <span className="truncate">
+                <div className="w-full rounded-full h-12 border border-gray-300 px-4 flex items-center">
+                  <span className="truncate text-gray-500">
                     {formData[field.name]?.name || "Choose file"}
                   </span>
                 </div>
@@ -182,15 +193,13 @@ const UserSubmitDocuments = () => {
             </div>
           ))}
 
-          <div className="bg-white pt-4 mb-2 md:mb-4">
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full h-12 rounded-full bg-blue-600 text-white font-medium text-base focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? "Uploading..." : "Upload Documents"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="mt-4 w-full h-12 rounded-full bg-blue-600 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? "Uploading..." : "Upload Documents"}
+          </button>
         </form>
       </div>
     </div>
