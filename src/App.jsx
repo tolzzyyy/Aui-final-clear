@@ -111,7 +111,6 @@ const App = () => {
           <Route index element={<AdminDashboard/>} />
         </Route>
         
-        {/* Catch-all redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>

@@ -6,19 +6,9 @@ import { FaBars, FaTimes } from "react-icons/fa";
 import { FiBell, FiChevronDown } from "react-icons/fi";
 import { CiLogout } from "react-icons/ci";
 
-const notifications = [
-  { id: 1, message: "📢 Hostel clearance approved", time: "2h ago" },
-  { id: 2, message: "⚠️ Faculty document rejected", time: "4h ago" },
-  { id: 3, message: "📩 New message from admin", time: "Yesterday" },
-  { id: 4, message: "🗃️ Library clearance verified", time: "2 days ago" },
-];
-
-const latestThree = notifications.slice(0, 3);
-
 const UserTopNav = () => {
   const [profile, setProfile] = useState(false);
   const [open, setOpen] = useState(false);
-  const [bellOpen, setbellOpen] = useState(false);
   const [logOutOpen, setLogoutOpen] = useState(false);
   const dropdownRef = useRef();
   const [userData, setUserData] = useState(null);
@@ -27,13 +17,7 @@ const UserTopNav = () => {
   const handlebellOpen = () => {
     setbellOpen(!bellOpen);
   };
-  const handleProfile = () => {
-    setProfile((prev) => !prev);
-  };
-
-  const handleOpen = () => {
-    setOpen(!open);
-  };
+  
 
   useEffect(() => {
     const storedData = localStorage.getItem("user");
@@ -49,8 +33,9 @@ const UserTopNav = () => {
     setLoading(false);
   }, []);
 
+ // Disable scrolling when profile or mobile menu is open
   useEffect(() => {
-    if (open) {
+    if (profile || open) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -59,7 +44,15 @@ const UserTopNav = () => {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [open]);
+  }, [profile, open]);
+
+  const handleProfile = () => {
+    setProfile((prev) => !prev);
+  };
+
+  const handleOpen = () => {
+    setOpen(!open);
+  };
 
   const bellRef = useRef();
 
@@ -139,12 +132,7 @@ const UserTopNav = () => {
               Clearance Status
             </NavLink>
           </div>
-          <div className="relative items-center lg:flex hidden gap-3" ref={bellRef}>
-            <div 
-              onClick={() => setbellOpen(!bellOpen)} 
-              className="w-15 h-15 flex items-center justify-center rounded-full bg-[#FAFAFA]">
-              <FiBell size={25}/>
-            </div>
+          <div className="relative items-center lg:flex hidden gap-3">
 
             {userData && (
               <div className="flex relative gap-3 items-center">
@@ -154,9 +142,6 @@ const UserTopNav = () => {
                 <div>
                   <h3 className="text-lg">{userData.firstName || 'User'}</h3>
                   <p className="text-xs text-[#A3A3A3]">{userData.department || 'User'}</p>
-                </div>
-                <div className="cursor-pointer" onClick={() => setLogoutOpen(!logOutOpen)} ref={dropdownRef}>
-                  <FiChevronDown />
                 </div>
               </div>
             )}

@@ -5,8 +5,26 @@ import BackArrowSvg from "../../assets/svg's/BackArrowSvg";
 import MailSvg from "../../assets/svg's/MailSvg";
 import CircleCheckSvg from "../../assets/svg's/CircleCheckSvg";
 import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import toastr from "toastr";
+import "toastr/build/toastr.min.css";
+
+toastr.options = {
+  closeButton: true,
+  debug: false,
+  newestOnTop: true,
+  progressBar: true,
+  positionClass: "toast-top-right",
+  preventDuplicates: false,
+  showDuration: "300",
+  hideDuration: "1000",
+  timeOut: "5000",
+  extendedTimeOut: "1000",
+  showEasing: "swing",
+  hideEasing: "linear",
+  showMethod: "fadeIn",
+  hideMethod: "fadeOut",
+};
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -26,6 +44,10 @@ const SignUp = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+    confirmPassword: false,
+  });
   const resizeTimeout = useRef(null);
 
   useEffect(() => {
@@ -70,19 +92,19 @@ const SignUp = () => {
     setError(null);
 
     if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match");
+      toastr.error("Passwords do not match");
       return setError("Passwords do not match");
     }
 
     const isEmptyField = Object.values(formData).some((v) => v.trim() === "");
     if (isEmptyField) {
-      toast.error("Please fill in all required fields");
+      toastr.error("Please fill in all required fields");
       return setError("Please fill in all required fields");
     }
 
     try {
       setIsLoading(true);
-      toast.info("Creating your account...");
+      toastr.info("Creating your account...");
       
       const response = await axios.post(
         "https://finalclear-backend-11.onrender.com/api/register",
@@ -98,12 +120,12 @@ const SignUp = () => {
           user: response.data.user
         };
         localStorage.setItem('user', JSON.stringify(userData));
-        toast.success("Registration successful!");
+        toastr.success("Registration successful!");
         navigate('/userdashboard');
       }
     } catch (err) {
       const errorMessage = err.response?.data?.message || err.message || "Registration failed. Please try again.";
-      toast.error(errorMessage);
+      toastr.error(errorMessage);
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -154,11 +176,23 @@ const SignUp = () => {
   const formFields = [
     { label: "FIRST NAME", type: "text", placeholder: "Enter First Name", name: "firstName" },
     { label: "LAST NAME", type: "text", placeholder: "Enter Last Name", name: "lastName" },
-    { label: "Department", type: "text", placeholder: "Enter Department", name: "department" },
+    { label: "DEPARTMENT", type: "text", placeholder: "Enter Department", name: "department" },
     { label: "MATRIC NUMBER", type: "text", placeholder: "Enter Matric Number", name: "matricNumber" },
     { label: "EMAIL ADDRESS", type: "email", placeholder: "Enter Email", name: "email", icon: <MailSvg /> },
-    { label: "PASSWORD", type: "password", placeholder: "Create password", name: "password" },
-    { label: "CONFIRM PASSWORD", type: "password", placeholder: "Confirm password", name: "confirmPassword" },
+    { 
+      label: "PASSWORD", 
+      type: showPassword.password ? "text" : "password", 
+      placeholder: "Create password",  
+      name: "password",
+      icon: showPassword.password ? <FaEyeSlash color="black" size={18} /> : <FaEye color="black" size={18} />
+    },
+    { 
+      label: "CONFIRM PASSWORD", 
+      type: showPassword.confirmPassword ? "text" : "password", 
+      placeholder: "Confirm password",  
+      name: "confirmPassword",
+      icon: showPassword.confirmPassword ? <FaEyeSlash color="black" size={18} /> : <FaEye color="black" size={18} />
+    },
     { label: "PHONE NUMBER", type: "tel", placeholder: "Enter phone number", name: "phoneNumber" },
   ];
 
@@ -181,8 +215,7 @@ const SignUp = () => {
 
   return (
     <AuthLayout>
-      <ToastContainer position="top-right" autoClose={5000} />
-<div className="flex flex-col md:px-8 pt-[50px] md:py-[50px] h-[100dvh] relative">
+      <div className="flex flex-col md:px-8 pt-[50px] md:py-[50px] h-[100dvh] relative">
         <div className="pt-4 pb-2 px-4 sm:pb-4 w-full sm:px-6 shrink-0">
           <Link to="/" className="flex gap-3 items-center mb-4 sm:mb-6">
             <BackArrowSvg />
@@ -220,7 +253,21 @@ const SignUp = () => {
                     onBlur={handleBlur}
                     className="w-full rounded-full h-12 border border-gray-300 pl-4 pr-10 text-base outline-none focus:ring-2 placeholder:text-gray-400"
                   />
-                  {field.icon && (
+                  {(field.name === "password" || field.name === "confirmPassword") && (
+                    <button
+                      type="button"
+                      className="absolute cursor-pointer right-4 top-3.5 text-gray-500 hover:text-gray-700"
+                      onClick={() =>
+                        setShowPassword((prev) => ({
+                          ...prev,
+                          [field.name]: !prev[field.name]
+                        }))
+                      }
+                    >
+                      {field.icon}
+                    </button>
+                  )}
+                  {field.name === "email" && field.icon && (
                     <span className="absolute bg-white top-[14px] right-4">
                       {field.icon}
                     </span>

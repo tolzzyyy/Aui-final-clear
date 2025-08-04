@@ -8,7 +8,6 @@ import toastr from "toastr";
 import "toastr/build/toastr.min.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-// Configure toastr
 toastr.options = {
   closeButton: true,
   debug: false,
@@ -39,7 +38,6 @@ const SignIn = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  // Initialize refs array
   useEffect(() => {
     inputRefs.current = inputRefs.current.slice(0, 2);
   }, []);
@@ -53,58 +51,59 @@ const SignIn = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  // Basic validation
-  if (!formData.email || !formData.password) {
-    toastr.error("Please fill in all fields");
-    return;
-  }
+    if (!formData.email || !formData.password) {
+      toastr.error("Please fill in all fields");
+      return;
+    }
 
-  setIsLoading(true);
+    setIsLoading(true);
 
-  try {
-    const response = await axios.post(
-      "https://finalclear-backend-11.onrender.com/api/login",
-      {
-        email: formData.email,
-        password: formData.password,
+    try {
+      const response = await axios.post(
+        "https://finalclear-backend-11.onrender.com/api/login",
+        {
+          email: formData.email,
+          password: formData.password,
+        }
+      );
+
+      if (response.data) {
+        localStorage.setItem("user", JSON.stringify(response.data));
+
+        toastr.success("Login successful!");
+
+        if (response.data.role === "admin") {
+          setTimeout(() => navigate("/admindashboard"), 1500);
+        } else {
+          setTimeout(() => navigate("/userdashboard"), 1500);
+        }
       }
-    );
+    } catch (error) {
+      let errorMessage = "Login failed. Please try again.";
 
-    if (response.data) {
-      // Store user data
-      localStorage.setItem("user", JSON.stringify(response.data));
-
-      // Show success toast
-      toastr.success("Login successful!");
-
-      // Check if user is admin
-      if (response.data.role === "admin") {
-        // Redirect to admin dashboard
-        setTimeout(() => navigate("/admindashboard"), 1500);
+      if (error.response) {
+        if (error.response.data && error.response.data.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.response.status === 401) {
+          errorMessage = "Invalid email or password";
+        } else if (error.response.status === 400) {
+          errorMessage = "Bad request. Please check your input.";
+        } else if (error.response.status === 500) {
+          errorMessage = "Server error. Please try again later.";
+        }
+      } else if (error.request) {
+        errorMessage = "Network error. Please check your connection.";
       } else {
-        // Redirect to regular user dashboard
-        setTimeout(() => navigate("/userdashboard"), 1500);
+        errorMessage = error.message;
       }
+
+      toastr.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    let errorMessage = "Login failed. Please try again.";
-
-    if (error.response) {
-      // Server responded with error status (4xx, 5xx)
-      errorMessage = error.response.data?.message || errorMessage;
-    } else if (error.request) {
-      // Request was made but no response received
-      errorMessage = "Network error. Please check your connection.";
-    }
-
-    toastr.error(errorMessage);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+  };
   const handleKeyDown = (e, index) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -201,7 +200,7 @@ const SignIn = () => {
                   {field.icons && (
                     <button
                       type="button"
-                      className="absolute cursor-pointer right-3 top-3.5 text-gray-500 hover:text-gray-700"
+                      className="absolute cursor-pointer right-4 top-3.5 text-gray-500 hover:text-gray-700"
                       onClick={() =>
                         setShowPassword((prev) => ({
                           ...prev,
