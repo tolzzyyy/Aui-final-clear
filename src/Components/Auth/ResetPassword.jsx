@@ -49,7 +49,7 @@ const ResetPassword = () => {
 
     try {
       const response = await axios.post(
-        `https://finalclear-backend-11.onrender.com/api/reset-password/${token}`,
+        `https://finalclear-backend-13.onrender.com/api/reset-password/${token}`,
         {
           password: formData.password,
           confirmPassword: formData.confirmPassword,

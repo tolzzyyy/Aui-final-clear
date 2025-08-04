@@ -50,7 +50,7 @@ const ForgotPassword = () => {
 
     try {
       const response = await axios.post(
-        "https://finalclear-backend-11.onrender.com/api/forgot-password", 
+        "https://finalclear-backend-13.onrender.com/api/forgot-password", 
         {
           email: formData.email
         }
