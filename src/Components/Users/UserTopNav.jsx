@@ -89,7 +89,7 @@ const UserTopNav = () => {
 
   return (
     <div>
-      <div className="w-full fixed overflow-hidden bg-white h-auto py-[30px] px-[30px] lg:px-[50px] xl:px-[137px]">
+      <div className="w-full fixed top-0 overflow-hidden bg-white h-auto py-[30px] px-[30px] lg:px-[50px] xl:px-[137px]">
         <nav className="flex relative h-full justify-between items-center">
           <div className="flex md:gap-3 gap-2 items-center">
             <img className="md:w-[69px] w-[50px]" src={logo} alt="" />
