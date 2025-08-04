@@ -133,7 +133,7 @@ const UserSubmitDocuments = () => {
         ref={formContainerRef}
         className="flex-1 overflow-y-auto overscroll-contain px-4"
         style={{
-          paddingBottom: keyboardVisible ? '200px' : '20px',
+        
           scrollBehavior: 'smooth'
         }}
       >
