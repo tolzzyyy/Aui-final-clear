@@ -103,7 +103,7 @@ const UserSubmitDocuments = () => {
       data.append("jambAdmissionLetter", formData.jambAdmissionLetter);
 
       await axios.post(
-        "https://finalclear-backend-5.onrender.com/api/credentials/upload",
+        "https://finalclear-backend-13.onrender.com/api/credentials/upload",
         data,
         { headers: { Authorization: `Bearer ${token}` } }
       );

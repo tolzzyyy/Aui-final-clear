@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import logo from "../../assets/Images/aui_logo_2 1 (1).png";
 import userFace from "../../assets/Images/userFace.png";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { FiBell, FiChevronDown } from "react-icons/fi";
 import { CiLogout } from "react-icons/ci";
@@ -13,7 +13,13 @@ const UserTopNav = () => {
   const dropdownRef = useRef();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+const location = useLocation(); // Already imported above
 
+useEffect(() => {
+  // On route change, close nav and unlock scroll
+  setProfile(false);
+  setOpen(false);
+}, [location.pathname]);
   const handlebellOpen = () => {
     setbellOpen(!bellOpen);
   };
@@ -35,6 +41,7 @@ const UserTopNav = () => {
 
  // Disable scrolling when profile or mobile menu is open
   useEffect(() => {
+     
     if (profile || open) {
       document.body.style.overflow = "hidden";
     } else {
@@ -164,14 +171,14 @@ const UserTopNav = () => {
         </nav>
 
         {/* Mobile Menu - Removed profile info from here */}
-        <div
-          className={`
-            fixed top-0 left-0 w-full h-screen bg-white z-40 
-            flex lg:hidden flex-col items-center justify-center gap-[40px]
-            transition-transform duration-700 ease-in-out
-            transform ${open ? "translate-y-0" : "-translate-y-full"}
-          `}
-        >
+         <div
+        className={`
+        fixed top-0 left-0 w-full h-screen bg-white z-40 
+        flex flex-col items-center justify-center gap-[40px]
+        transition-all duration-700 ease-in-out
+        ${open ? "translate-y-0" : "-translate-y-full"}
+      `}
+      >
           <NavLink
             to="/userdashboard"
             className="text-[#000000B2] text-[12px]"

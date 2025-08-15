@@ -107,7 +107,7 @@ const SignUp = () => {
       toastr.info("Creating your account...");
       
       const response = await axios.post(
-        "https://finalclear-backend-11.onrender.com/api/register",
+        "https://finalclear-backend-13.onrender.com/api/register",
         formData,
         {
           headers: { "Content-Type": "application/json" }
